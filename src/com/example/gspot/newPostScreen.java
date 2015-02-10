@@ -185,7 +185,6 @@ public class newPostScreen extends Activity {
         }
  
         if (fragment != null) {
-        	System.out.println("haldun");
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.frame_container2, fragment).commit();

@@ -78,47 +78,21 @@ public class UploadPicture extends Activity {
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) { // pick from
                                                                     // camera
-                if (item == 0) {
-                    String storageState = Environment.getExternalStorageState();
+            	if (item == 0) {
+            	     Intent intent   = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            	     
+            	     mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(),
+            	            "tmp_avatar_" + String.valueOf(System.currentTimeMillis()) + ".jpg"));
 
-                    if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-                        Intent intent = new Intent(
-                                MediaStore.ACTION_IMAGE_CAPTURE);
+            	     intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
 
-                        String path = Environment.getExternalStorageDirectory()
-                                .getName()
-                                + File.separatorChar
-                                + System.currentTimeMillis() + ".jpg";
-                        File file = new File(path);
-
-                        Log.i("TAG", "Final  path" + path);
-                        try {
-                            if (file.exists() == false) {
-                                file.getParentFile().mkdirs();
-                                file.createNewFile();
-                            }
-
-                        } catch (IOException e) {
-                            Log.e("TAG", "Could not create file.", e);
-                        }
-                        mImageCaptureUri = Uri.fromFile(file);
-                        intent.putExtra(
-                                android.provider.MediaStore.EXTRA_OUTPUT,
-                                mImageCaptureUri);
-
-
-                        try {
-                            startActivityForResult(intent, PICK_FROM_CAMERA);
-                        } catch (ActivityNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        new AlertDialog.Builder(UploadPicture.this)
-                                .setMessage(
-                                        "External Storeage (SD Card) is required.\n\nCurrent state: "
-                                                + storageState)
-                                .setCancelable(true).create().show();
-                    }
+            	     try {
+            	      intent.putExtra("return-data", true);
+            	      
+            	      startActivityForResult(intent, PICK_FROM_CAMERA);
+            	     } catch (ActivityNotFoundException e) {
+            	      e.printStackTrace();
+            	     }
 
                 } else { // pick from file
                     Intent intent = new Intent();
@@ -230,11 +204,9 @@ public class UploadPicture extends Activity {
                 mImageView.setImageBitmap(bm);
             }
 
-            /*
-             * File f = new File(mImageCaptureUri.getPath());
-             * 
-             * if (f.exists()) f.delete();
-             */
+              File f = new File(mImageCaptureUri.getPath());
+              if (f.exists()) f.delete();
+             
 
             break;
 
@@ -318,89 +290,73 @@ public class UploadPicture extends Activity {
     }
 
     private void doCrop() {
-        final ArrayList<CropOption> cropOptions = new ArrayList<CropOption>();
-
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setType("image/*");
-
-        List<ResolveInfo> list = getPackageManager().queryIntentActivities(
-                intent, 0);
-
-        int size = list.size();
-
-        if (size == 0) {
-            Toast.makeText(this, "Can not find image crop app",
-                    Toast.LENGTH_SHORT).show();
-
-            return;
-        } else {
-
-            intent.setData(mImageCaptureUri);
-            intent.setClassName("com.android.camera",
-                    "com.android.camera.CropImage");
-            intent.putExtra("outputX", 100);
-            intent.putExtra("outputY", 100);
-            intent.putExtra("aspectX", 1);
-            intent.putExtra("aspectY", 1);
-            intent.putExtra("scale", true);
-            intent.putExtra("return-data", true);
-            // startActivityForResult(intent, CROP_FROM_CAMERA);
-
-            if (size == 1) {
-                Intent i = new Intent(intent);
-                ResolveInfo res = list.get(0);
-
-                i.setComponent(new ComponentName(res.activityInfo.packageName,
-                        res.activityInfo.name));
-
-                startActivityForResult(i, CROP_FROM_CAMERA);
-            } else {
-                for (ResolveInfo res : list) {
-                    final CropOption co = new CropOption();
-
-                    co.title = getPackageManager().getApplicationLabel(
-                            res.activityInfo.applicationInfo);
-                    co.icon = getPackageManager().getApplicationIcon(
-                            res.activityInfo.applicationInfo);
-                    co.appIntent = new Intent(intent);
-
-                    co.appIntent
-                            .setComponent(new ComponentName(
-                                    res.activityInfo.packageName,
-                                    res.activityInfo.name));
-
-                    cropOptions.add(co);
-                }
-
-                CropOptionAdapter adapter = new CropOptionAdapter(
-                        getApplicationContext(), cropOptions);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Choose Crop App");
-                builder.setAdapter(adapter,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int item) {
-                                startActivityForResult(
-                                        cropOptions.get(item).appIntent,
-                                        CROP_FROM_CAMERA);
-                            }
-                        });
-
-                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-
-                        if (mImageCaptureUri != null) {
-                            getContentResolver().delete(mImageCaptureUri, null,
-                                    null);
-                            mImageCaptureUri = null;
-                        }
-                    }
-                });
-
-                AlertDialog alert = builder.create();
-
-                alert.show();
+    	  final ArrayList<CropOption> cropOptions = new ArrayList<CropOption>();
+    	     
+    	     Intent intent = new Intent("com.android.camera.action.CROP");
+    	        intent.setType("image/*");
+    	        
+    	        List<ResolveInfo> list = getPackageManager().queryIntentActivities( intent, 0 );
+    	        
+    	        int size = list.size();
+    	        
+    	        if (size == 0) {         
+    	         Toast.makeText(this, "Can not find image crop app", Toast.LENGTH_SHORT).show();
+    	         
+    	            return;
+    	        } else {
+    	         intent.setData(mImageCaptureUri);
+    	            
+    	            intent.putExtra("outputX", 200);
+    	            intent.putExtra("outputY", 200);
+    	            intent.putExtra("aspectX", 1);
+    	            intent.putExtra("aspectY", 1);
+    	            intent.putExtra("scale", true);
+    	            intent.putExtra("return-data", true);
+    	            
+    	         if (size == 1) {
+    	          Intent i   = new Intent(intent);
+    	          ResolveInfo res = list.get(0);
+    	          
+    	          i.setComponent( new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+    	          
+    	          startActivityForResult(i, CROP_FROM_CAMERA);
+    	         } else {
+    	          for (ResolveInfo res : list) {
+    	           final CropOption co = new CropOption();
+    	           
+    	           co.title  = getPackageManager().getApplicationLabel(res.activityInfo.applicationInfo);
+    	           co.icon  = getPackageManager().getApplicationIcon(res.activityInfo.applicationInfo);
+    	           co.appIntent= new Intent(intent);
+    	           
+    	           co.appIntent.setComponent( new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+    	           
+    	              cropOptions.add(co);
+    	          }
+    	         
+    	          CropOptionAdapter adapter = new CropOptionAdapter(getApplicationContext(), cropOptions);
+    	          
+    	          AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	          builder.setTitle("Choose Crop App");
+    	          builder.setAdapter( adapter, new DialogInterface.OnClickListener() {
+    	              public void onClick( DialogInterface dialog, int item ) {
+    	                  startActivityForResult( cropOptions.get(item).appIntent, CROP_FROM_CAMERA);
+    	              }
+    	          });
+    	         
+    	          builder.setOnCancelListener( new DialogInterface.OnCancelListener() {
+    	              @Override
+    	              public void onCancel( DialogInterface dialog ) {
+    	                 
+    	                  if (mImageCaptureUri != null ) {
+    	                      getContentResolver().delete(mImageCaptureUri, null, null );
+    	                      mImageCaptureUri = null;
+    	                  }
+    	              }
+    	          } );
+    	          
+    	          AlertDialog alert = builder.create();
+    	          
+    	          alert.show();
             }
         }
     }
