@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/regusername"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.chatroom.MainActivity" >
+
+    <Button
+        android:id="@+id/completeregister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/gender"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:text="Register" />
+
+    <Spinner
+        android:id="@+id/gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/completeregister"
+        android:layout_alignLeft="@+id/reguname"
+        android:layout_marginBottom="16dp"
+        android:entries="@array/genders"
+        android:prompt="@string/gender" />
+
+    <EditText
+        android:id="@+id/regmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/regsurname"
+        android:layout_below="@+id/regsurname"
+        android:ems="10"
+        android:hint="E-mail"
+        android:singleLine="true"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/regpassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reguname"
+        android:layout_below="@+id/reguname"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/reguname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/regname"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:singleLine="true"
+        android:hint="Username" >
+     	<requestFocus />
+     	 </EditText>
+
+    <EditText
+        android:id="@+id/regpassword2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/regpassword"
+        android:layout_alignRight="@+id/regpassword"
+        android:layout_below="@+id/regpassword"
+        android:ems="10"
+        android:hint = "Confirm Password"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/regname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/regsurname"
+        android:layout_below="@+id/regpassword2"
+        android:ems="10"
+        android:singleLine="true"
+        android:hint="Name" />
+
+    <EditText
+        android:id="@+id/regsurname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/city"
+        android:layout_below="@+id/regname"
+        android:ems="10"
+        android:singleLine="true"
+        android:hint="Surname" />
+
+    <EditText
+        android:id="@+id/regcity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/regmail"
+        android:ems="10"
+        android:singleLine="true"
+        android:hint="City" />
+
+</RelativeLayout>
