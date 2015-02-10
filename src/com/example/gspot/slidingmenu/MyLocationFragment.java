@@ -98,6 +98,8 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	                i.putExtra("place", nearbyplaces.get(position));
 	                i.putExtra("user",user);
 	                startActivity(i);
+	                getActivity().finish();
+	                
 					
 				}				
 			});
@@ -141,12 +143,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         }
         
         
-    }/*
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mLocationClient.connect();
-    }*/
+    }
 
     @Override
 	public void onStop() {

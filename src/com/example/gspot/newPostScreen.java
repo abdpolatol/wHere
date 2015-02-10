@@ -1,9 +1,22 @@
 package com.example.gspot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -16,6 +29,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.gspot.nearbyplaces.PlaceClass;
 import com.example.gspot.slidingmenu.MyProfileFragment;
 import com.example.gspot.slidingmenu.NavDrawerItem;
 import com.example.gspot.slidingmenu.NavDrawerListAdapter;
@@ -26,6 +40,8 @@ public class newPostScreen extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private User user;
+    private PlaceClass place;
  
     // nav drawer title
     private CharSequence mDrawerTitle;
@@ -44,7 +60,10 @@ public class newPostScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_page);
- 
+        Intent i = getIntent();
+        user = (User) i.getParcelableExtra("user");
+        place = (PlaceClass) i.getParcelableExtra("place");
+
         mTitle = mDrawerTitle = getTitle();
  
         // load slide menu items
@@ -116,7 +135,27 @@ public class newPostScreen extends Activity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                 long id) {
+        	final AlertDialog.Builder adb = new AlertDialog.Builder(newPostScreen.this);
             // display view for selected nav drawer item
+        	if(position==3){
+        		adb.setTitle("Confirm Check-out");
+    			adb.setMessage("Do you want to check-out from "+ place.getName()+" ?");
+    			adb.setIcon(R.drawable.checkinicon);			
+    			adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
+    				public void onClick(DialogInterface dialog, int which) {
+    					checkOutFunction();
+    					Intent i= new Intent(newPostScreen.this, newUserPage.class);    	               
+    	                i.putExtra("user",user);
+    	                startActivity(i);
+    	                finish();
+    					
+    				}				
+    			});
+    			adb.setNegativeButton("No", null);
+    			adb.show();
+        		
+        		
+        	}
             displayView(position);
         	
         }
@@ -171,7 +210,6 @@ public class newPostScreen extends Activity {
             fragment = new PhotosFragment();
             break;
         case 3:
-            fragment = new PagesFragment();
             break;
         case 4:
           //  fragment = new PagesFragment();
@@ -223,6 +261,26 @@ public class newPostScreen extends Activity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+    public void checkOutFunction(){
+
+		HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/checkout.php");
+        
+            
+        List<NameValuePair> nameValuePairs_checkOut = new ArrayList<NameValuePair>(1);
+        
+ 
+        nameValuePairs_checkOut.add(new BasicNameValuePair("userID",Integer.toString(user.getUserID()).trim()) );  
+       
+
+        try{ 
+        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs_checkOut));
+        httpclient.execute(httppost);
+        
+        }catch(Exception e){
+            System.out.println("Exception : " + e.getMessage());
+        }
     }
  
 }

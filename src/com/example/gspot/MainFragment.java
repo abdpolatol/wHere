@@ -158,10 +158,12 @@ public class MainFragment extends Fragment{
             nameValuePairs.add(new BasicNameValuePair("username",et.getText().toString().trim())); 
             nameValuePairs.add(new BasicNameValuePair("password",pass.getText().toString().trim())); 
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
+            System.out.println(et.getText().toString().trim());
+            System.out.println(pass.getText().toString().trim());
+            
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             final String response = httpclient.execute(httppost, responseHandler);
-
+            System.out.println(response);
              
             if(response.equalsIgnoreCase("User Found")){
             	InputStream is = null;
