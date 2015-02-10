@@ -6,17 +6,25 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.newPostScreen;
+import com.example.gspot.newUserPage;
 import com.example.gspot.nearbyplaces.PlaceClass;
 import com.example.gspot.placesListView.LazyAdapter;
 import com.google.android.gms.common.ConnectionResult;
@@ -89,24 +97,53 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         list.setOnItemClickListener(new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+			if(user.getCheckInFlag()==0){
 			adb.setTitle("Confirm Check-in");
 			adb.setMessage("Do you want to check-in at "+nearbyplaces.get(position).getName()+" ?");
 			adb.setIcon(R.drawable.checkinicon);			
 			adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
+				public void onClick(DialogInterface dialog, int which) {				
 					Intent i= new Intent(getActivity(), newPostScreen.class); 
-	                i.putExtra("place", nearbyplaces.get(position));
+					user.setCheckInFlag(1);
+					i.putExtra("place", nearbyplaces.get(position));
 	                i.putExtra("user",user);
 	                startActivity(i);
 	                getActivity().finish();
-	                
+	
 					
 				}				
 			});
 			adb.setNegativeButton("No", null);
 			adb.show();
 		}
+			if(user.getCheckInFlag()==1){
+				adb.setTitle("You must first check out");
+				adb.setMessage("Do you want to check out and check-in at "+nearbyplaces.get(position).getName()+" ?");
+				adb.setIcon(R.drawable.checkinicon);			
+				adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {				
+						Intent i= new Intent(getActivity(), newPostScreen.class); 
+						checkOutFunction();
+						user.setCheckInFlag(1);
+						i.putExtra("place", nearbyplaces.get(position));
+		                i.putExtra("user",user);
+		                startActivity(i);
+		                getActivity().finish();
+		
+						
+					}				
+				});
+				adb.setNegativeButton("No", null);
+				adb.show();
+			}
+	
+		
+		
+		
+		
+	}
 	});
+    
 	
 	}
 	public static class ErrorDialogFragment extends DialogFragment {
@@ -309,4 +346,26 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         list.setAdapter(adapter);
         
 	}
+    public void checkOutFunction(){
+    	user.setCheckInFlag(0);
+		HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/checkout.php");
+        
+            
+        List<NameValuePair> nameValuePairs_checkOut = new ArrayList<NameValuePair>(1);
+        
+ 
+        nameValuePairs_checkOut.add(new BasicNameValuePair("userID",Integer.toString(user.getUserID()).trim()) );  
+       
+
+        try{ 
+        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs_checkOut));
+        httpclient.execute(httppost);
+        
+        }catch(Exception e){
+            System.out.println("Exception : " + e.getMessage());
+        }
+    }
+
+    
 }

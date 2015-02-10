@@ -219,6 +219,7 @@ public class MainFragment extends Fragment{
                 user.setAge(age);
                 user.setCity(city);
                 user.setImageUrl(imageUrl);
+                user.setCheckInFlag(0);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
 					public void run() {

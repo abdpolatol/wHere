@@ -78,15 +78,17 @@ public class newPostScreen extends Activity {
  
         navDrawerItems = new ArrayList<NavDrawerItem>();
  
-        // adding nav drawer items to array
-        // Home
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        // Find People
+       
+        // Current Place
+        navDrawerItems.add(new NavDrawerItem(place.getName(), navMenuIcons.getResourceId(0, -1)));
+        // Posts 
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        // Photos
+        // Online People
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "22"));
-        // Communities, Will add a counter here
+        // Checkout, Will add a counter here
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+     // Home, Will add a counter here
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(4, -1)));
  
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -156,6 +158,14 @@ public class newPostScreen extends Activity {
         		
         		
         	}
+        	if(position==4){
+        		Intent i= new Intent(newPostScreen.this, newUserPage.class);    	               
+                i.putExtra("user",user);
+                i.putExtra("place", place);
+                startActivity(i);
+                finish();
+        		
+        	}
             displayView(position);
         	
         }
@@ -201,10 +211,10 @@ public class newPostScreen extends Activity {
         android.app.Fragment fragment = null;
         switch (position) {
         case 0:
-            fragment = new PostFragment();
+            fragment = new PhotosFragment();
             break;
         case 1:
-            fragment = new MyProfileFragment();
+            fragment = new PostFragment();
             break;
         case 2:
             fragment = new PhotosFragment();
@@ -212,7 +222,7 @@ public class newPostScreen extends Activity {
         case 3:
             break;
         case 4:
-          //  fragment = new PagesFragment();
+            
             break;
         case 5:
           //  fragment = new WhatsHotFragment();
@@ -263,7 +273,7 @@ public class newPostScreen extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
     public void checkOutFunction(){
-
+    	user.setCheckInFlag(0);
 		HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/checkout.php");
         
@@ -281,6 +291,15 @@ public class newPostScreen extends Activity {
         }catch(Exception e){
             System.out.println("Exception : " + e.getMessage());
         }
+    }
+    @Override
+    public void onBackPressed() {
+    	Intent i= new Intent(newPostScreen.this, newUserPage.class);    	               
+        i.putExtra("user",user);
+        i.putExtra("place", place);
+        startActivity(i);
+        finish();
+       
     }
  
 }

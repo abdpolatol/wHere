@@ -29,8 +29,8 @@
         <item >What\'s Hot</item>
     </string-array>
     <string-array name="nav_drawer_items_post">
-        <item >Current Place</item>
-        <item >My Profile</item>
+        <item >Home</item>
+        <item >Posts</item>
         <item >Online People</item>
         <item >Check Out</item>
     </string-array>

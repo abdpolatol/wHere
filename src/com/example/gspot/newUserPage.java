@@ -2,6 +2,7 @@ package com.example.gspot;
 
 import java.util.ArrayList;
 
+import com.example.gspot.nearbyplaces.PlaceClass;
 import com.example.gspot.slidingmenu.MyLocationFragment;
 import com.example.gspot.slidingmenu.MyProfileFragment;
 import com.example.gspot.slidingmenu.NavDrawerItem;
@@ -43,6 +44,7 @@ public class newUserPage extends Activity{
 	Button b,b2,b3,b4;
 	Intent i;
 	User user;
+	PlaceClass place;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,8 @@ public class newUserPage extends Activity{
          i= getIntent();
         user = (User) i.getParcelableExtra("user");
         
+        if(user.getCheckInFlag()==1)
+        	place=(PlaceClass) i.getParcelableExtra("place");
         mTitle = mDrawerTitle = getTitle();
         
         // load slide menu items
@@ -74,6 +78,9 @@ public class newUserPage extends Activity{
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
         // Communities, Will add a counter here
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+        
+        if(user.getCheckInFlag()==1)
+        navDrawerItems.add(new NavDrawerItem(place.getName(), navMenuIcons.getResourceId(4, -1)));
         // Pages
        // navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         // What's hot, We  will add a counter here
@@ -115,6 +122,10 @@ public class newUserPage extends Activity{
     	   	if(user.getFlag()==1){
     	   		user.setFlag(0);
     	   		displayView(1);
+    	   	}
+    	   	else if (user.getFlag()==2){
+    	   		user.setFlag(0);
+    	   		 displayView(2);
     	   	}
     	   	else
     	   		displayView(0);
@@ -171,8 +182,17 @@ public class newUserPage extends Activity{
         public void onItemClick(AdapterView<?> parent, View view, int position,
                 long id) {
             // display view for selected nav drawer item
-        	
-            displayView(position);
+        	if(position==4){
+        		Intent i= new Intent(newUserPage.this, newPostScreen.class);    	               
+                i.putExtra("user",user);
+                i.putExtra("place", place);
+                startActivity(i);
+                finish();
+        	}
+        	else{
+        		displayView(position);
+        	}
+            
         }
     }
     /**
