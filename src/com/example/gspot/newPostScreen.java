@@ -30,12 +30,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.gspot.nearbyplaces.PlaceClass;
+import com.example.gspot.onlinePeople.onlinePeopleFragment;
 import com.example.gspot.slidingmenu.MyProfileFragment;
 import com.example.gspot.slidingmenu.NavDrawerItem;
 import com.example.gspot.slidingmenu.NavDrawerListAdapter;
 import com.example.gspot.slidingmenu.PagesFragment;
 import com.example.gspot.slidingmenu.PhotosFragment;
 import com.example.gspot.slidingmenu.PostFragment;
+import com.example.gspot.slidingmenu.postHomeFragment;
 public class newPostScreen extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -62,8 +64,8 @@ public class newPostScreen extends Activity {
         setContentView(R.layout.post_page);
         Intent i = getIntent();
         user = (User) i.getParcelableExtra("user");
-        place = (PlaceClass) i.getParcelableExtra("place");
-
+        place = (PlaceClass) i.getParcelableExtra("place");       
+        
         mTitle = mDrawerTitle = getTitle();
  
         // load slide menu items
@@ -211,13 +213,13 @@ public class newPostScreen extends Activity {
         android.app.Fragment fragment = null;
         switch (position) {
         case 0:
-            fragment = new PhotosFragment();
+            fragment = new postHomeFragment();
             break;
         case 1:
             fragment = new PostFragment();
             break;
         case 2:
-            fragment = new PhotosFragment();
+            fragment = new onlinePeopleFragment();
             break;
         case 3:
             break;
@@ -301,6 +303,7 @@ public class newPostScreen extends Activity {
         finish();
        
     }
+    
  
 }
     

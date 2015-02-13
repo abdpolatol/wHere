@@ -77,7 +77,7 @@ public class PostFragment extends Fragment {
             	tv2.setText("");
             }
         });
-        checkinFunction();
+        
         
         //Log.e("Name: ",user.getUser_name());
         first_do_that();
@@ -210,33 +210,7 @@ public String get_wall_posts()  {
 		}
 
     }
-    public void checkinFunction(){
-
-		HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/checkin.php");
-        HttpPost httppost2 = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/add_place.php");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Calendar cal = Calendar.getInstance();
-            List<NameValuePair> nameValuePairs_checkin = new ArrayList<NameValuePair>(3);
-            List<NameValuePair> nameValuePairs_addplace = new ArrayList<NameValuePair>(4);
- 
-            nameValuePairs_checkin.add(new BasicNameValuePair("userID",Integer.toString(user.getUserID()).trim()) );  
-        nameValuePairs_checkin.add(new BasicNameValuePair("placeID", place.getId().trim()) );
-        nameValuePairs_checkin.add(new BasicNameValuePair("date",dateFormat.format(cal.getTime()).trim()) );
-        nameValuePairs_addplace.add(new BasicNameValuePair("placeID",place.getId().trim()) );
-        nameValuePairs_addplace.add(new BasicNameValuePair("placename",place.getName().trim()) );
-        nameValuePairs_addplace.add(new BasicNameValuePair("placelat",place.getLat().trim()) );
-        nameValuePairs_addplace.add(new BasicNameValuePair("placelon",place.getLon().trim()) );
-
-        try{ 
-        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs_checkin));
-        httppost2.setEntity(new UrlEncodedFormEntity(nameValuePairs_addplace));
-        httpclient.execute(httppost);
-        httpclient.execute(httppost2);
-        }catch(Exception e){
-            System.out.println("Exception : " + e.getMessage());
-        }
-    }
+    
     
 }
  

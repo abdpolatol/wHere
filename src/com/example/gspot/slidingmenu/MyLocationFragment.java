@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -20,7 +19,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-
 import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.newPostScreen;
@@ -32,7 +30,7 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -69,6 +67,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	private LocationClient mLocationClient;
     private Location mCurrentLocation;
     private int counter=0;
+    private PlaceClass place;
     public static ArrayList<PlaceClass> nearbyplaces = new ArrayList<PlaceClass>();
 	
 	
@@ -107,6 +106,9 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 					user.setCheckInFlag(1);
 					i.putExtra("place", nearbyplaces.get(position));
 	                i.putExtra("user",user);
+	                place=nearbyplaces.get(position);
+	                	                
+	                checkinFunction();
 	                startActivity(i);
 	                getActivity().finish();
 	
@@ -127,6 +129,9 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 						user.setCheckInFlag(1);
 						i.putExtra("place", nearbyplaces.get(position));
 		                i.putExtra("user",user);
+		                place=nearbyplaces.get(position);
+		                
+		                checkinFunction();
 		                startActivity(i);
 		                getActivity().finish();
 		
@@ -363,6 +368,40 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         httpclient.execute(httppost);
         
         }catch(Exception e){
+            System.out.println("Exception : " + e.getMessage());
+        }
+    }
+    @SuppressLint("SimpleDateFormat")
+	public void checkinFunction(){
+    	
+		HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/checkin.php");
+        HttpPost httppost2 = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/add_place.php");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Calendar cal = Calendar.getInstance();
+            List<NameValuePair> nameValuePairs_checkin = new ArrayList<NameValuePair>(3);
+            List<NameValuePair> nameValuePairs_addplace = new ArrayList<NameValuePair>(4);
+ 
+        nameValuePairs_checkin.add(new BasicNameValuePair("userID",Integer.toString(user.getUserID()).trim()) );  
+        nameValuePairs_checkin.add(new BasicNameValuePair("placeID", place.getId().trim()) );
+        nameValuePairs_checkin.add(new BasicNameValuePair("date",dateFormat.format(cal.getTime()).trim()) );
+        nameValuePairs_addplace.add(new BasicNameValuePair("placeID",place.getId().trim()) );
+        nameValuePairs_addplace.add(new BasicNameValuePair("placename",place.getName().trim()) );
+        nameValuePairs_addplace.add(new BasicNameValuePair("placelat",place.getLat().trim()) );
+        nameValuePairs_addplace.add(new BasicNameValuePair("placelon",place.getLon().trim()) );
+
+        try{ 
+        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs_checkin));
+       
+        httppost2.setEntity(new UrlEncodedFormEntity(nameValuePairs_addplace));
+        
+        httpclient.execute(httppost2);
+        
+       
+        httpclient.execute(httppost);
+        
+        }catch(Exception e){
+        	
             System.out.println("Exception : " + e.getMessage());
         }
     }
