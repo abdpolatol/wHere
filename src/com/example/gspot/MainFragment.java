@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -18,25 +19,32 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.StrictMode;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.LoginButton;
-import android.support.v4.app.Fragment;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class MainFragment extends Fragment{
@@ -52,6 +60,10 @@ public class MainFragment extends Fragment{
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
     ProgressDialog dialog = null;
+    public static SharedPreferences loginPreferences;
+    public static SharedPreferences.Editor loginPrefsEditor;
+    private String uname,upass;
+    private boolean saveLogin;
 	public View onCreateView(LayoutInflater inflater, 
 	        ViewGroup container, 
 	        Bundle savedInstanceState) {
@@ -66,6 +78,22 @@ public class MainFragment extends Fragment{
 	   
         pass= (EditText)view.findViewById(R.id.passwordMain);
         pass.setHint("Password");
+        
+        loginPreferences = getActivity().getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);
+        loginPrefsEditor = loginPreferences.edit();
+        
+        saveLogin = loginPreferences.getBoolean("saveLogin", false);
+        uname = loginPreferences.getString("username", "");
+        upass = loginPreferences.getString("password", "");
+        
+        if (saveLogin == true) {
+        	login();
+        	
+        	
+        	
+            System.out.println("asdasdsd");
+        }
+        
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,29 +179,43 @@ public class MainFragment extends Fragment{
 	}
 	void login(){
         try{            
-              
+        	if (android.os.Build.VERSION.SDK_INT > 9) {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+            } 
             httpclient=new DefaultHttpClient();
             httppost= new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/check.php"); 
             nameValuePairs = new ArrayList<NameValuePair>(2);
-            nameValuePairs.add(new BasicNameValuePair("username",et.getText().toString().trim())); 
-            nameValuePairs.add(new BasicNameValuePair("password",pass.getText().toString().trim())); 
+            if(saveLogin==false){
+            	nameValuePairs.add(new BasicNameValuePair("username",et.getText().toString().trim())); 
+            	nameValuePairs.add(new BasicNameValuePair("password",pass.getText().toString().trim()));
+            }
+            else{
+            	nameValuePairs.add(new BasicNameValuePair("username",uname.trim())); 
+                nameValuePairs.add(new BasicNameValuePair("password",upass.trim()));
+            }
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            System.out.println(et.getText().toString().trim());
-            System.out.println(pass.getText().toString().trim());
             
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            final String response = httpclient.execute(httppost, responseHandler);
+            String response = httpclient.execute(httppost, responseHandler);
             System.out.println(response);
              
             if(response.equalsIgnoreCase("User Found")){
+            	
             	InputStream is = null;
             	httpclient=new DefaultHttpClient();
                 httppost= new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/session.php");
                 nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("username",et.getText().toString().trim()));
+                if(saveLogin == false){
+                	nameValuePairs.add(new BasicNameValuePair("username",et.getText().toString().trim()));
+                }
+                else{
+                	nameValuePairs.add(new BasicNameValuePair("username",uname.trim()));
+                }
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 
                 HttpResponse sessionResponse = httpclient.execute(httppost);
+               
                 HttpEntity entity = sessionResponse.getEntity();
                 is = entity.getContent();
                 
@@ -185,7 +227,7 @@ public class MainFragment extends Fragment{
                 String imageUrl="";
                 int age=0;
                 int userID;
-                String result = null;
+                String result = null; 
                 try{
                     BufferedReader reader = new BufferedReader(new InputStreamReader(is,"iso-8859-1"),8);
                     StringBuilder sb = new StringBuilder();
@@ -220,14 +262,26 @@ public class MainFragment extends Fragment{
                 user.setCity(city);
                 user.setImageUrl(imageUrl);
                 user.setCheckInFlag(0);
+              
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
 					public void run() {
                         Toast.makeText(getActivity(),"Login Success", Toast.LENGTH_SHORT).show();
                     }
                 });
-                dialog.dismiss();
+                System.out.println("üst");
+                //dialog.dismiss();
+                // keep logged in*****
+                if(saveLogin==false){
+                loginPrefsEditor.putBoolean("saveLogin", true);
+                loginPrefsEditor.putString("username", username);
+                loginPrefsEditor.putString("password", pass.getText().toString().trim());
+                loginPrefsEditor.commit();
+                }
+                //***************
+                System.out.println("alt");
                 Intent i= new Intent(getActivity(), newUserPage.class);
+                
                 i.putExtra("user", user);
                 startActivity(i);
                 getActivity().finish();

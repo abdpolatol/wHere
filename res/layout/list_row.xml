@@ -35,6 +35,26 @@
         android:typeface="sans" 
         android:textSize="15dip"
         android:textStyle="bold"/>
+    <!-- Online Icon -->    
+     <ImageView 
+        android:id="@+id/onlineIcon"
+        android:layout_width="wrap_content"
+     	android:layout_height="wrap_content"
+     	android:src="@drawable/online"
+     	android:layout_toRightOf="@+id/thumbnail"
+     	android:layout_alignParentBottom="true"/>
+      <!-- Number of Online Users  -->  
+      
+     <TextView
+        android:id="@+id/numberOfOnline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/onlineIcon"
+        android:textColor="#040404"
+        android:typeface="sans" 
+        android:textSize="15dip"
+        android:textStyle="bold"/>
 
      <!-- Rightend Arrow -->    
      <ImageView android:layout_width="wrap_content"

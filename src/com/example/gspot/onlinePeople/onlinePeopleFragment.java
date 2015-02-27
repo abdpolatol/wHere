@@ -7,8 +7,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -22,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -29,6 +32,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.gspot.R;
 import com.example.gspot.User;
+import com.example.gspot.newPostScreen;
 import com.example.gspot.nearbyplaces.PlaceClass;
 
 public class onlinePeopleFragment extends Fragment {
@@ -56,10 +60,10 @@ public class onlinePeopleFragment extends Fragment {
 		Intent i = getActivity().getIntent();
         user = (User) i.getParcelableExtra("user");
 		place = (PlaceClass) i.getParcelableExtra("place");
-		listView = (ListView) getView().findViewById(R.id.list);
+		listView = (ListView) getView().findViewById(R.id.list2);
         adapter = new onlinePeopleAdapter(getActivity(), userList);
         listView.setAdapter(adapter);
- 
+        userList.clear();
         pDialog = new ProgressDialog(getActivity());
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
@@ -68,6 +72,8 @@ public class onlinePeopleFragment extends Fragment {
         // changing action bar color
         getActivity().getActionBar().setBackgroundDrawable(
                 new ColorDrawable(Color.parseColor("#1b1b1b")));
+        
+
  
         url = "http://www.ceng.metu.edu.tr/~e1818871/online_users.php?userID="+Integer.toString(user.getUserID())+ "&placeID="+place.getId();
         // Creating volley request obj

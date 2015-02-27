@@ -1,5 +1,6 @@
 package com.example.gspot.slidingmenu;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,8 +9,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -27,14 +31,23 @@ import com.example.gspot.nearbyplaces.PlaceClass;
 import com.example.gspot.placesListView.LazyAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,6 +56,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,41 +72,57 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MyLocationFragment extends Fragment implements
 GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener {
-	
+	private MapView mapView;
 	private GoogleMap map;
-	ListView list;
-	User user;
-    LazyAdapter adapter;
+	private ListView list;
+	private User user;
+	private LazyAdapter adapter;
     public static final String NAME = "name";
 	private LocationClient mLocationClient;
     private Location mCurrentLocation;
     private int counter=0;
     private PlaceClass place;
     public static ArrayList<PlaceClass> nearbyplaces = new ArrayList<PlaceClass>();
-	
+    public  ArrayList<String> placeIDs = new ArrayList<String>();
+	public static List<String> userCount;
 	
 	
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-		setHasOptionsMenu(true); 
+		
         View rootView = inflater.inflate(R.layout.userpage, container, false);
-         
+        setHasOptionsMenu(true); 
+        
+        mapView = (MapView) rootView.findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+        
+    	map = mapView.getMap();
+    	map.getUiSettings().setMyLocationButtonEnabled(true);
+    	map.setMyLocationEnabled(true);
+    	MapsInitializer.initialize(this.getActivity());
+		
+		// Updates the location and zoom of the MapView
+		
+		
         return rootView;
     }
 	
 	public void onStart() {
         super.onStart();
 
-        
+     
         Intent i = getActivity().getIntent();
         user = (User) i.getParcelableExtra("user");
         list=(ListView)getView().findViewById(R.id.list);
         final AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        setUpMapIfNeeded();
-        map.setMyLocationEnabled(true);
+        //setUpMapIfNeeded();
+        
         mLocationClient = new LocationClient(getActivity(), this, this);
         mLocationClient.connect();
+        
+        
+		
         list.setOnItemClickListener(new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -170,28 +200,14 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         }
 		
     }
-   
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-    	
-        if (map == null) {
-            map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-                                .getMap();
-            // Check if we were successful in obtaining the map.
-            if (map != null) {
-                // The Map is verified. It is now safe to manipulate the map.
- 
-           }
-        }
-        
-        
-    }
+
 
     @Override
 	public void onStop() {
         mLocationClient.disconnect();
         super.onStop();
     }
+  
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -202,6 +218,27 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     @Override
     public void onConnectionFailed(ConnectionResult arg0) {
         // TODO Auto-generated method stub
+    }
+    @Override
+	public void onResume() {
+		mapView.onResume();
+		super.onResume();
+	}
+    @Override
+	public void onLowMemory() {
+		super.onLowMemory();
+		mapView.onLowMemory();
+	}
+    @Override
+   	public void onDestroy() {
+   		super.onDestroy();
+   		mapView.onDestroy();
+   	}
+
+    @Override
+    public void onDisconnected() {
+        Toast.makeText(getActivity(), "Disconnected. Please re-connect.",
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -228,22 +265,20 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                     	if(counter==1){
                     		if(nearbyplaces.size()!=0){
                     			nearbyplaces.clear();
-                    		}
-                    		String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=500&key=AIzaSyBg0q_Qi-IbgaVVBCX3MadAt2rFMkwvZWU&location=";
+                    		}// onur's api AIzaSyBg0q_Qi-IbgaVVBCX3MadAt2rFMkwvZWU
+                    		String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=500&key=AIzaSyBPz4pH4Hqbodd5vmOvGb2BYpLLN_Ir1uM&location=";
                     		query=query.concat(String.valueOf(mCurrentLocation.getLatitude())+","+String.valueOf(mCurrentLocation.getLongitude()));                    		
                     		new HttpTask().execute(query); 
                     	}
                     	
                     }
                 });
+        
         mCurrentLocation = mLocationClient.getLastLocation();
         
-    }
-
-    @Override
-    public void onDisconnected() {
-        Toast.makeText(getActivity(), "Disconnected. Please re-connect.",
-                Toast.LENGTH_SHORT).show();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 15);
+		map.animateCamera(cameraUpdate);
+        
     }
     
     public String getWebPage(String adresse) {
@@ -327,12 +362,15 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		String[] lines = input.split(System.getProperty("line.separator"));
 		
 		int counter = 0;
+		nearbyplaces.clear();
 		for( int i = 0; i <= lines.length - 1; i++)
 		{	
-
-			if(lines[i].toLowerCase().contains("\"lat\"")){
+			if(lines[i].toLowerCase().contains("\"location\"")){
 				PlaceClass temp = new PlaceClass();
-				nearbyplaces.add(temp);	
+				nearbyplaces.add(temp);					
+				}
+
+			if(lines[i].toLowerCase().contains("\"lat\"")){					
 				nearbyplaces.get(counter).setLat(lines[i].substring(lines[i].indexOf(": ")+2,lines[i].indexOf(",")));
 				}
 			if(lines[i].toLowerCase().contains("\"lng\"")){
@@ -342,16 +380,76 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 				nearbyplaces.get(counter).setName(lines[i].substring(lines[i].indexOf(": \"")+3,lines[i].indexOf("\",")));			
 				}
 			if(lines[i].toLowerCase().contains("\"place_id\"")){
+				placeIDs.add(lines[i].substring(lines[i].indexOf(": \"")+3,lines[i].indexOf("\",")));
 				nearbyplaces.get(counter).setId(lines[i].substring(lines[i].indexOf(": \"")+3,lines[i].indexOf("\",")));
 				counter++;
 				}  			
 		}
 		
-        adapter=new LazyAdapter(getActivity(), MyLocationFragment.nearbyplaces);        
+		
+		 String onlineUsers = userCountFunction(placeIDs,placeIDs.size());
+		 String subString =onlineUsers.substring(1, onlineUsers.length()-2);
+		 
+		 System.out.println("sizeee");
+		 System.out.println(nearbyplaces.size());
+		 System.out.println(placeIDs.size());
+		  userCount= Arrays.asList(subString.split(","));
+		
+		 
+		
+		 
+        adapter=new LazyAdapter(getActivity(), MyLocationFragment.nearbyplaces,userCount);           
         list.setAdapter(adapter);
         
 	}
+    public String userCountFunction(ArrayList<String> ids, int size){
+    	if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+    	String result = "";
+    	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        for (int i = 0; i < size; i++) {
+
+        	nameValuePairs.add(new BasicNameValuePair("ids[]",ids.get(i)));
+
+       }
+        nameValuePairs.add(new BasicNameValuePair("size",Integer.toString(size)));
+        InputStream is = null;
+        
+        try{
+        	HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/usersinplaces.php");
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            is = entity.getContent();
+          
+    }catch(Exception e){
+            Log.e("log_tag", "Error in http connection "+e.toString());
+    }
+        
+      //convert response to string
+        try{
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is,"iso-8859-9"),8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                        sb.append(line + "\n");
+                }
+                is.close();
+         
+                result=sb.toString();
+        }catch(Exception e){
+                Log.e("log_tag", "Error converting result "+e.toString());
+        }
+        return result;
+    	
+    	
+        
+    }
     public void checkOutFunction(){
+    	
     	user.setCheckInFlag(0);
 		HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/checkout.php");
@@ -371,6 +469,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
             System.out.println("Exception : " + e.getMessage());
         }
     }
+   
     @SuppressLint("SimpleDateFormat")
 	public void checkinFunction(){
     	

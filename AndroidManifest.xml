@@ -30,7 +30,7 @@
         android:value="@integer/google_play_services_version" />
         <meta-data
     android:name="com.google.android.maps.v2.API_KEY"
-    android:value="AIzaSyC3qRW9Wa7YUGWyf9vV_j67EzvI6G16YNw"/>
+    android:value="AIzaSyBouUIMDdn_xoxFTFlOh2lgVZjvfkDyS3M"/>
         
         <uses-library android:name="com.google.android.maps" />
          android:debuggable="true"

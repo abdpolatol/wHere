@@ -2,15 +2,10 @@ package com.example.gspot;
 
 import java.util.ArrayList;
 
-import com.example.gspot.nearbyplaces.PlaceClass;
-import com.example.gspot.slidingmenu.MyLocationFragment;
-import com.example.gspot.slidingmenu.MyProfileFragment;
-import com.example.gspot.slidingmenu.NavDrawerItem;
-import com.example.gspot.slidingmenu.NavDrawerListAdapter;
-import com.example.gspot.slidingmenu.PhotosFragment;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -25,12 +20,19 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.gspot.nearbyplaces.PlaceClass;
+import com.example.gspot.slidingmenu.MyLocationFragment;
+import com.example.gspot.slidingmenu.MyProfileFragment;
+import com.example.gspot.slidingmenu.NavDrawerItem;
+import com.example.gspot.slidingmenu.NavDrawerListAdapter;
+import com.example.gspot.slidingmenu.PhotosFragment;
+
 public class newUserPage extends Activity{
 
 	// slide menu items
     private String[] navMenuTitles;
     private TypedArray navMenuIcons;
- 
+    
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
     
@@ -76,11 +78,16 @@ public class newUserPage extends Activity{
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         // Photos
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-        // Communities, Will add a counter here
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
         
+        
+        //Checked in place
         if(user.getCheckInFlag()==1)
-        navDrawerItems.add(new NavDrawerItem(place.getName(), navMenuIcons.getResourceId(4, -1)));
+        navDrawerItems.add(new NavDrawerItem(place.getName(), navMenuIcons.getResourceId(5, -1)));
+        
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(4, -1)));
+        
+        //Logout
+        
         // Pages
        // navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         // What's hot, We  will add a counter here
@@ -178,16 +185,57 @@ public class newUserPage extends Activity{
      * */
     private class SlideMenuClickListener implements
             ListView.OnItemClickListener {
+    	final AlertDialog.Builder adb = new AlertDialog.Builder(newUserPage.this);
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                 long id) {
             // display view for selected nav drawer item
-        	if(position==4){
+        	if(position==3 && user.getCheckInFlag()==1){
         		Intent i= new Intent(newUserPage.this, newPostScreen.class);    	               
                 i.putExtra("user",user);
                 i.putExtra("place", place);
                 startActivity(i);
                 finish();
+        	}
+        	else if(position==3 && user.getCheckInFlag()==0)
+        	{	
+        		adb.setTitle("Confirm Logout");
+    			adb.setMessage("Do you want to logout ?");
+    			adb.setIcon(R.drawable.ic_logout);			
+    			adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
+    				public void onClick(DialogInterface dialog, int which) {				
+    					MainFragment.loginPrefsEditor.clear();
+    	        		MainFragment.loginPrefsEditor.commit();
+    	        		Intent i= new Intent(newUserPage.this, MainActivity.class); 
+    	        		startActivity(i);
+    	                finish();
+    					
+    				}				
+    			});
+    			adb.setNegativeButton("No", null);
+    			adb.show();
+        		
+        		
+        		
+        	}
+        	else if(position==4 && user.getCheckInFlag()==1)
+        	{	
+        		adb.setTitle("Confirm Logout");
+    			adb.setMessage("Do you want to logout ?");
+    			adb.setIcon(R.drawable.ic_logout);			
+    			adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
+    				public void onClick(DialogInterface dialog, int which) {				
+    					MainFragment.loginPrefsEditor.clear();
+    	        		MainFragment.loginPrefsEditor.commit();
+    	        		Intent i= new Intent(newUserPage.this, MainActivity.class); 
+    	        		startActivity(i);
+    	                finish();
+    					
+    				}				
+    			});
+    			adb.setNegativeButton("No", null);
+    			adb.show();
+        		
         	}
         	else{
         		displayView(position);
@@ -212,12 +260,16 @@ public class newUserPage extends Activity{
             fragment = new MyLocationFragment();
             break;
         case 3:
-            fragment = new PhotosFragment();
+            
             break;
         case 4:
             //fragment = new PagesFragment();
+        	//add here
+        	
+        
             break;
         case 5:
+        	//fragment = new PhotosFragment();
             //fragment = new WhatsHotFragment();
             break;
  

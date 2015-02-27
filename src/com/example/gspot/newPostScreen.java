@@ -1,14 +1,21 @@
 package com.example.gspot;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -20,6 +27,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -67,7 +75,9 @@ public class newPostScreen extends Activity {
         place = (PlaceClass) i.getParcelableExtra("place");       
         
         mTitle = mDrawerTitle = getTitle();
- 
+        
+        
+        
         // load slide menu items
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items_post);
  
@@ -79,14 +89,14 @@ public class newPostScreen extends Activity {
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu2);
  
         navDrawerItems = new ArrayList<NavDrawerItem>();
- 
+        String numberOfUsers=number_of_online_users();
        
         // Current Place
         navDrawerItems.add(new NavDrawerItem(place.getName(), navMenuIcons.getResourceId(0, -1)));
         // Posts 
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         // Online People
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "22"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, numberOfUsers));
         // Checkout, Will add a counter here
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
      // Home, Will add a counter here
@@ -302,6 +312,28 @@ public class newPostScreen extends Activity {
         startActivity(i);
         finish();
        
+    }
+    
+    public String number_of_online_users() {
+    	if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+    	String response= "" ;
+    	
+    	
+    	try{
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/numberofusers.php?placeID="+place.getId());
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            response = httpclient.execute(httppost, responseHandler);
+            System.out.println(response);
+            
+    }catch(Exception e){
+            Log.e("log_tag", "Error in http connection "+e.toString());
+    }
+  
+    return response;
     }
     
  

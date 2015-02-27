@@ -35,7 +35,7 @@ public class CustomizedListView extends Activity {
 		list=(ListView)findViewById(R.id.list);
 		
 		// Getting adapter by passing xml data ArrayList
-        adapter=new LazyAdapter(this, MyLocationFragment.nearbyplaces);        
+        adapter=new LazyAdapter(this, MyLocationFragment.nearbyplaces,MyLocationFragment.userCount);        
         list.setAdapter(adapter);
         
 
