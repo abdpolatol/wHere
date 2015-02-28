@@ -49,13 +49,13 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.gspot.PlaceClass;
 import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.Image_Activity.UploadPicture;
 import com.example.gspot.myprofile.PullScrollView;
 import com.example.gspot.myprofile.editProfile;
 import com.example.gspot.myprofile.previousPosts;
-import com.example.gspot.nearbyplaces.PlaceClass;
 
 
 public class MyProfileFragment extends Fragment implements PullScrollView.OnTurnListener {

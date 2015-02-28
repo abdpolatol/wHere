@@ -30,10 +30,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.example.gspot.PlaceClass;
 import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.newPostScreen;
-import com.example.gspot.nearbyplaces.PlaceClass;
 
 public class onlinePeopleFragment extends Fragment {
 	private User user;
@@ -94,17 +94,6 @@ public class onlinePeopleFragment extends Fragment {
                                 temp_user.setSurname(obj.getString("surname"));
                                 temp_user.setImageUrl(obj.getString("profile_pic"));
                                 
-                                
-                                /*
-                                // Genre is json array
-                                JSONArray genreArry = obj.getJSONArray("genre");
-                                ArrayList<String> genre = new ArrayList<String>();
-                                for (int j = 0; j < genreArry.length(); j++) {
-                                    genre.add((String) genreArry.get(j));
-                                }
-                                temp_user.setGenre(genre);*/
- 
-                                // adding movie to movies array
                                 userList.add(temp_user);
  
                             } catch (JSONException e) {

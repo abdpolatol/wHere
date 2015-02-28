@@ -23,11 +23,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+
+import com.example.gspot.PlaceClass;
 import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.newPostScreen;
 import com.example.gspot.newUserPage;
-import com.example.gspot.nearbyplaces.PlaceClass;
 import com.example.gspot.placesListView.LazyAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;

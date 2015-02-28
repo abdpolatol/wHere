@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 
+import com.example.gspot.PlaceClass;
 import com.example.gspot.R;
-import com.example.gspot.nearbyplaces.PlaceClass;
 
 import android.app.Activity;
 import android.content.Context;

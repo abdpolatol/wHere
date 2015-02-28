@@ -20,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.gspot.nearbyplaces.PlaceClass;
 import com.example.gspot.slidingmenu.MyLocationFragment;
 import com.example.gspot.slidingmenu.MyProfileFragment;
 import com.example.gspot.slidingmenu.NavDrawerItem;

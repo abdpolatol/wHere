@@ -37,14 +37,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.example.gspot.nearbyplaces.PlaceClass;
+import com.example.gspot.Post.PostFragment;
+import com.example.gspot.Post.newPostFragment;
 import com.example.gspot.onlinePeople.onlinePeopleFragment;
 import com.example.gspot.slidingmenu.MyProfileFragment;
 import com.example.gspot.slidingmenu.NavDrawerItem;
 import com.example.gspot.slidingmenu.NavDrawerListAdapter;
 import com.example.gspot.slidingmenu.PagesFragment;
 import com.example.gspot.slidingmenu.PhotosFragment;
-import com.example.gspot.slidingmenu.PostFragment;
 import com.example.gspot.slidingmenu.postHomeFragment;
 public class newPostScreen extends Activity {
     private DrawerLayout mDrawerLayout;
@@ -226,7 +226,7 @@ public class newPostScreen extends Activity {
             fragment = new postHomeFragment();
             break;
         case 1:
-            fragment = new PostFragment();
+            fragment = new newPostFragment();
             break;
         case 2:
             fragment = new onlinePeopleFragment();
