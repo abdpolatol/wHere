@@ -22,9 +22,9 @@ public class onlinePeopleAdapter  extends BaseAdapter {
     private List<User> userItems;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
  
-    public onlinePeopleAdapter(Activity activity, List<User> movieItems) {
+    public onlinePeopleAdapter(Activity activity, List<User> userList) {
         this.activity = activity;
-        this.userItems = movieItems;
+        this.userItems = userList;
     }
  
     @Override

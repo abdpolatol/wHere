@@ -52,7 +52,6 @@ public class onlinePeopleFragment extends Fragment {
             Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_online_people, container, false);
-        
         return rootView;
     }
 	public void onStart(){

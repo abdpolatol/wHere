@@ -327,7 +327,7 @@ public class newPostScreen extends Activity {
             HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/numberofusers.php?placeID="+place.getId());
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             response = httpclient.execute(httppost, responseHandler);
-            System.out.println(response);
+           
             
     }catch(Exception e){
             Log.e("log_tag", "Error in http connection "+e.toString());
