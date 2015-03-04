@@ -25,8 +25,8 @@
         <item >My Profile</item>
         <item >Near Places</item>
         <item >Logout</item>
-        <item >Logout</item>
-        <item >What\'s Hot</item>
+        <item >Friends</item>
+        
     </string-array>
     <string-array name="nav_drawer_items_post">
         <item >Home</item>
@@ -48,7 +48,8 @@
         <item>@drawable/near_places</item>
         <item>@drawable/ic_photos</item>
         <item>@drawable/ic_logout</item>
-        <item>@drawable/ic_pages</item>
+        <item>@drawable/ic_friends</item>
+        <item>@drawable/ic_place</item>
     </array>
      
     <!-- Content Description -->

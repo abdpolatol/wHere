@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.gspot.friends.FriendsFragment;
 import com.example.gspot.slidingmenu.MyLocationFragment;
 import com.example.gspot.slidingmenu.MyProfileFragment;
 import com.example.gspot.slidingmenu.NavDrawerItem;
@@ -77,11 +78,12 @@ public class newUserPage extends Activity{
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         // Photos
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-        
+     // Friends
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(5, -1)));
         
         //Checked in place
         if(user.getCheckInFlag()==1)
-        navDrawerItems.add(new NavDrawerItem(place.getName(), navMenuIcons.getResourceId(5, -1)));
+        navDrawerItems.add(new NavDrawerItem(place.getName(), navMenuIcons.getResourceId(6, -1)));
         
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(4, -1)));
         
@@ -189,14 +191,14 @@ public class newUserPage extends Activity{
         public void onItemClick(AdapterView<?> parent, View view, int position,
                 long id) {
             // display view for selected nav drawer item
-        	if(position==3 && user.getCheckInFlag()==1){
+        	if(position==4 && user.getCheckInFlag()==1){
         		Intent i= new Intent(newUserPage.this, newPostScreen.class);    	               
                 i.putExtra("user",user);
                 i.putExtra("place", place);
                 startActivity(i);
                 finish();
         	}
-        	else if(position==3 && user.getCheckInFlag()==0)
+        	else if(position==4 && user.getCheckInFlag()==0)
         	{	
         		adb.setTitle("Confirm Logout");
     			adb.setMessage("Do you want to logout ?");
@@ -217,7 +219,7 @@ public class newUserPage extends Activity{
         		
         		
         	}
-        	else if(position==4 && user.getCheckInFlag()==1)
+        	else if(position==5 && user.getCheckInFlag()==1)
         	{	
         		adb.setTitle("Confirm Logout");
     			adb.setMessage("Do you want to logout ?");
@@ -259,7 +261,7 @@ public class newUserPage extends Activity{
             fragment = new MyLocationFragment();
             break;
         case 3:
-            
+        	fragment = new FriendsFragment();
             break;
         case 4:
             //fragment = new PagesFragment();
