@@ -42,7 +42,6 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -54,7 +53,6 @@ import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.Image_Activity.UploadPicture;
 import com.example.gspot.myprofile.PullScrollView;
-import com.example.gspot.myprofile.editProfile;
 import com.example.gspot.myprofile.previousPosts;
 
 
@@ -71,12 +69,23 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
     Bitmap bitmap;
     ProgressDialog pDialog;
     private TextView editProfile;
-	
+    int friendID;
+    String friendName,friendSurname,friendPhoto;
+	int 	flag;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
- 
+		Bundle bundle=this.getArguments();
+        flag=bundle.getInt("flag");
+        if(flag==1){
+        	friendID=(bundle.getInt("friendID"));
+        	friendName=(bundle.getString("friendName"));
+        	friendSurname=(bundle.getString("friendSurname"));
+        	friendPhoto=(bundle.getString("friendPhoto"));
+        }
+        
+		
         View rootView = inflater.inflate(R.layout.act_pull_down, container, false);
          
         return rootView;
@@ -85,37 +94,44 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
 	@Override
     public void onStart() {
         super.onStart();
-
+        
+        
         Intent i = getActivity().getIntent();
         user = (User) i.getParcelableExtra("user");
         
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
     	StrictMode.setThreadPolicy(policy);
-        username = (TextView)getView().findViewById(R.id.user_name);
-        age = (TextView)getView().findViewById(R.id.user_age);
-        city = (TextView)getView().findViewById(R.id.user_city);
-        username.setText(user.getName().concat(" ").concat(user.getSurname()) );
-        age.setText(Integer.toString(user.getAge()));
-        city.setText(user.getCity());
-        new LoadImage().execute(user.getImageUrl());
-        initView();
-        editProfile = (TextView)getView().findViewById(R.id.attention_user);
-        editProfile.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    	
+    		username = (TextView)getView().findViewById(R.id.user_name);
+    		age = (TextView)getView().findViewById(R.id.user_age);
+    		city = (TextView)getView().findViewById(R.id.user_city);
+    		initView();
+    		editProfile = (TextView)getView().findViewById(R.id.attention_user);
+    	if(flag==0){
+    		username.setText(user.getName().concat(" ").concat(user.getSurname()) );
+    		age.setText(Integer.toString(user.getAge()));
+    		city.setText(user.getCity());     	
+    		new LoadImage().execute(user.getImageUrl());       	
+    		editProfile.setOnClickListener(new OnClickListener() {
+    		@Override
+            	public void onClick(View v) {
             	 
-            }
-        });
-        registerForContextMenu(profileImage);
-        showTable();
-        
+            	}
+    		});
+    		registerForContextMenu(profileImage);
+    		showTable();
+    	}
+    	if(flag==1){
+    		username.setText(friendName.concat(" ").concat(friendSurname));
+    		new LoadImage().execute(friendPhoto);
+    	}
         
         
         
     }
 	protected void initView() {
         mScrollView = (PullScrollView) getView().findViewById(R.id.scroll_view);
-        mHeadImg = (ImageView) getView().findViewById(R.id.background_img);
+        mHeadImg = (ImageView) getView().findViewById(R.id.background_img);        
         profileImage = (ImageView) getView().findViewById(R.id.user_avatar);
         expandedImageView = (ImageView) getView().findViewById(R.id.expanded_image);
         

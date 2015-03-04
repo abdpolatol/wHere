@@ -6,11 +6,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -21,10 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -33,7 +27,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.gspot.PlaceClass;
 import com.example.gspot.R;
 import com.example.gspot.User;
-import com.example.gspot.newPostScreen;
 
 public class onlinePeopleFragment extends Fragment {
 	private User user;
@@ -92,6 +85,7 @@ public class onlinePeopleFragment extends Fragment {
                                 temp_user.setName(obj.getString("name"));
                                 temp_user.setSurname(obj.getString("surname"));
                                 temp_user.setImageUrl(obj.getString("profile_pic"));
+                                temp_user.setUserID(Integer.parseInt(obj.getString("userID")));
                                 
                                 userList.add(temp_user);
  

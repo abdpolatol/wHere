@@ -15,7 +15,6 @@ import com.example.gspot.PlaceClass;
 import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.onlinePeople.AppController;
-import com.example.gspot.onlinePeople.onlinePeopleAdapter;
 import com.example.gspot.onlinePeople.onlinePeopleFragment;
 
 import android.app.Fragment;

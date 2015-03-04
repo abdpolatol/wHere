@@ -1,7 +1,5 @@
 package com.example.gspot;
 
-import java.sql.Blob;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 

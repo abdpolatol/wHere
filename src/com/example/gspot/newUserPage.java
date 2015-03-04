@@ -239,6 +239,7 @@ public class newUserPage extends Activity{
         		
         	}
         	else{
+        		
         		displayView(position);
         	}
             
@@ -255,9 +256,13 @@ public class newUserPage extends Activity{
             fragment = new PhotosFragment();
             break;
         case 1:
+        	Bundle bundle= new Bundle();
+        	bundle.putInt("flag", 0);
             fragment = new MyProfileFragment();
+            fragment.setArguments(bundle);
             break;
         case 2:
+        	
             fragment = new MyLocationFragment();
             break;
         case 3:

@@ -1,11 +1,5 @@
 package com.example.gspot.placesListView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import com.example.gspot.R;
 import com.example.gspot.slidingmenu.MyLocationFragment;

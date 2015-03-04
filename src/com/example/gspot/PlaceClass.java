@@ -1,15 +1,7 @@
 package com.example.gspot;
 
-
-import java.sql.Blob;
-
-
-
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 
 public class PlaceClass implements Parcelable{
 	private String name;

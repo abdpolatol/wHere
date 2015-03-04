@@ -1,6 +1,5 @@
 package com.example.gspot.myprofile;
 
-import java.text.SimpleDateFormat;
 
 public class previousPosts {
 	private String placeName;

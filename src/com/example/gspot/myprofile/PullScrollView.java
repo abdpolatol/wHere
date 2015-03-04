@@ -10,7 +10,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ScrollView;
 
 import com.example.gspot.R;
-import com.example.gspot.R.styleable;
 
 
 public class PullScrollView extends ScrollView {

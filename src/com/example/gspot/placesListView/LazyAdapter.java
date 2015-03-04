@@ -1,8 +1,6 @@
 package com.example.gspot.placesListView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -51,11 +49,10 @@ public class LazyAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View vi=convertView;
         if(convertView==null){
-        	System.out.println("-------------====== "+position);
+        	
         	
         	vi = inflater.inflate(R.layout.list_row, null);
-        }
-        System.out.println("-------------====== "+position);
+        }       
         
         TextView title = (TextView)vi.findViewById(R.id.placename); // title
         ImageView thumb_image=(ImageView)vi.findViewById(R.id.list_image); // thumb image  
