@@ -166,10 +166,6 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 				adb.setNegativeButton("No", null);
 				adb.show();
 			}
-	
-		
-		
-		
 		
 	}
 	});
@@ -255,6 +251,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                     }
 
                     public void onLocationChanged(final Location location) {
+                    	
                     	mCurrentLocation = location;
                     	counter++;
                     	if(counter==1){
@@ -263,6 +260,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                     		}// onur's api AIzaSyBg0q_Qi-IbgaVVBCX3MadAt2rFMkwvZWU
                     		String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=500&key=AIzaSyBPz4pH4Hqbodd5vmOvGb2BYpLLN_Ir1uM&location=";
                     		query=query.concat(String.valueOf(mCurrentLocation.getLatitude())+","+String.valueOf(mCurrentLocation.getLongitude()));                    		
+                    		
                     		new HttpTask().execute(query); 
                     	}
                     	
@@ -327,7 +325,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	}
 
 	private class HttpTask extends AsyncTask<String, Integer, String> {
-
+		
 	    @Override
 	    protected String doInBackground(String... urls) {
 	        // TODO Auto-generated method stub

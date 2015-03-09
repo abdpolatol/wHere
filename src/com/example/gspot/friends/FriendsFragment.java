@@ -88,6 +88,7 @@ public class FriendsFragment extends Fragment {
                                 temp_user.setName(obj.getString("name"));
                                 temp_user.setSurname(obj.getString("surname"));
                                 temp_user.setImageUrl(obj.getString("profile_pic"));
+                                temp_user.setUserID(Integer.parseInt(obj.getString("userID")));
                                 
                                 userList.add(temp_user);
  

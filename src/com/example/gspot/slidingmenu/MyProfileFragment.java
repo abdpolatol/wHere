@@ -76,32 +76,19 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-		Bundle bundle=this.getArguments();
-        flag=bundle.getInt("flag");
-        if(flag==1){
-        	friendID=(bundle.getInt("friendID"));
-        	friendName=(bundle.getString("friendName"));
-        	friendSurname=(bundle.getString("friendSurname"));
-        	friendPhoto=(bundle.getString("friendPhoto"));
-        }
-        
-		
-        View rootView = inflater.inflate(R.layout.act_pull_down, container, false);
-         
+		View rootView = inflater.inflate(R.layout.act_pull_down, container, false);         
         return rootView;
     }
 	
 	@Override
     public void onStart() {
         super.onStart();
-        
-        
+        Bundle bundle=this.getArguments();
+        flag=bundle.getInt("flag");
         Intent i = getActivity().getIntent();
-        user = (User) i.getParcelableExtra("user");
-        
+        user = (User) i.getParcelableExtra("user");        
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-    	StrictMode.setThreadPolicy(policy);
-    	
+    	StrictMode.setThreadPolicy(policy);  	
     		username = (TextView)getView().findViewById(R.id.user_name);
     		age = (TextView)getView().findViewById(R.id.user_age);
     		city = (TextView)getView().findViewById(R.id.user_city);
@@ -111,7 +98,7 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
     		username.setText(user.getName().concat(" ").concat(user.getSurname()) );
     		age.setText(Integer.toString(user.getAge()));
     		city.setText(user.getCity());     	
-    		new LoadImage().execute(user.getImageUrl());       	
+    		new LoadImage().execute(user.getImageUrl());   
     		editProfile.setOnClickListener(new OnClickListener() {
     		@Override
             	public void onClick(View v) {
@@ -121,13 +108,24 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
     		registerForContextMenu(profileImage);
     		showTable();
     	}
-    	if(flag==1){
-    		username.setText(friendName.concat(" ").concat(friendSurname));
-    		new LoadImage().execute(friendPhoto);
-    	}
-        
-        
-        
+    	else{
+    		friendID=(bundle.getInt("friendID"));
+        	friendName=(bundle.getString("friendName"));
+        	friendSurname=(bundle.getString("friendSurname"));
+        	friendPhoto=(bundle.getString("friendPhoto"));
+        	if(flag==1){
+        		username.setText(friendName+" "+friendSurname);
+        		new LoadImage().execute(friendPhoto);
+        		editProfile.setText("UnFriend");
+        		editProfile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.delete, 0, 0, 0);
+        	}
+        	if(flag==2){
+        		username.setText(friendName+" "+friendSurname);
+        		new LoadImage().execute(friendPhoto);
+        		editProfile.setText("In Progress");
+        		editProfile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.waiting, 0, 0, 0);
+        	}
+    	}      
     }
 	protected void initView() {
         mScrollView = (PullScrollView) getView().findViewById(R.id.scroll_view);

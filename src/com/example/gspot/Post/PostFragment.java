@@ -114,7 +114,7 @@ public class PostFragment extends Fragment {
 					return false;
 				}
 			});
-			System.out.println("haldun");
+			
 			String url = "http://www.ceng.metu.edu.tr/~e1818871/wall.php?placeID="+place.getId();
 	        // Creating volley request obj
 	        JsonArrayRequest PostReq = new JsonArrayRequest(url,
@@ -149,10 +149,7 @@ public class PostFragment extends Fragment {
 	 
 	                        // notifying list adapter about data changes
 	                        // so that it renders the list view with updated data
-	                        System.out.println("haldun");
-	                		Log.e("haldun", "haldun");
-	                		Log.e("haldun", Integer.toString(commentList.size()));
-	                		System.out.println(commentList.size());
+	                        
 	                        adapter.notifyDataSetChanged();
 	                    }
 	                }, new Response.ErrorListener() {
