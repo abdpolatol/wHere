@@ -131,6 +131,12 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
         		editProfile.setText("Add Friend");
         		//editProfile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.waiting, 0, 0, 0);
         	}
+        	if(flag==4){
+        		username.setText(friendName+" "+friendSurname);
+        		new LoadImage().execute(friendPhoto);
+        		editProfile.setText("Accept Request");
+        		editProfile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.confirm, 0, 0, 0);
+        	}
     	}      
     }
 	protected void initView() {
