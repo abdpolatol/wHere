@@ -258,7 +258,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                     		if(nearbyplaces.size()!=0){
                     			nearbyplaces.clear();
                     		}// onur's api AIzaSyBg0q_Qi-IbgaVVBCX3MadAt2rFMkwvZWU
-                    		String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=500&key=AIzaSyBPz4pH4Hqbodd5vmOvGb2BYpLLN_Ir1uM&location=";
+                    		String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=20&key=AIzaSyBPz4pH4Hqbodd5vmOvGb2BYpLLN_Ir1uM&location=";
                     		query=query.concat(String.valueOf(mCurrentLocation.getLatitude())+","+String.valueOf(mCurrentLocation.getLongitude()));                    		
                     		
                     		new HttpTask().execute(query); 
