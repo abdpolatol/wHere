@@ -1,6 +1,7 @@
 package com.example.gspot.slidingmenu;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -22,8 +24,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,12 +41,12 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TableLayout;
@@ -88,12 +94,156 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
         Intent i = getActivity().getIntent();
         user = (User) i.getParcelableExtra("user");        
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-    	StrictMode.setThreadPolicy(policy);  	
-    		username = (TextView)getView().findViewById(R.id.user_name);
-    		age = (TextView)getView().findViewById(R.id.user_age);
-    		city = (TextView)getView().findViewById(R.id.user_city);
-    		initView();
-    		editProfile = (TextView)getView().findViewById(R.id.attention_user);
+    	StrictMode.setThreadPolicy(policy);
+    	final AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+    	
+		username = (TextView)getView().findViewById(R.id.user_name);
+		age = (TextView)getView().findViewById(R.id.user_age);
+		city = (TextView)getView().findViewById(R.id.user_city);
+		initView();
+		editProfile = (TextView)getView().findViewById(R.id.attention_user);
+		
+		editProfile.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	if(flag == 0){
+            		
+            	}
+            	if(flag == 1){
+            		adb.setTitle("Confirm Unfriend");
+        			adb.setMessage("Do you want to unfriend "+friendName+" "+friendSurname+" ?");
+        			adb.setIcon(R.drawable.delete);			
+        			adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
+        				public void onClick(DialogInterface dialog, int which) {
+        					deletefriend();
+        					Bundle bundle= new Bundle();
+        					flag=3;
+        	            	bundle.putInt("flag", flag);
+        	            	bundle.putString("friendName",friendName);
+        	            	bundle.putString("friendSurname",friendSurname);
+        	            	bundle.putString("friendPhoto",friendPhoto);          
+        	            	bundle.putInt("friendID",friendID);
+        	            	
+        	            	MyProfileFragment fragment=new MyProfileFragment();
+        	            	fragment.setArguments(bundle);
+        	            	
+        	            	FragmentManager fragmentManager = getActivity().getFragmentManager();
+        	            	FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        	            	fragmentTransaction.replace(R.id.myprofilefragment, fragment);
+
+        	            	fragmentTransaction.commit();
+        				}				
+        			});
+        			adb.setNegativeButton("No", null);
+        			adb.show();
+            	}
+            	if(flag == 2){
+            		adb.setTitle("Cancel Friend Request");
+        			adb.setMessage("Do you want to cancel friend request?");
+        			adb.setIcon(R.drawable.delete);			
+        			adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
+        				public void onClick(DialogInterface dialog, int which) {
+        					deletefriend();
+        					Bundle bundle= new Bundle();
+        					flag=3;
+        	            	bundle.putInt("flag", flag);
+        	            	bundle.putString("friendName",friendName);
+        	            	bundle.putString("friendSurname",friendSurname);
+        	            	bundle.putString("friendPhoto",friendPhoto);          
+        	            	bundle.putInt("friendID",friendID);
+        	            	
+        	            	MyProfileFragment fragment=new MyProfileFragment();
+        	            	fragment.setArguments(bundle);
+        	            	
+        	            	FragmentManager fragmentManager = getActivity().getFragmentManager();
+        	            	FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        	            	fragmentTransaction.replace(R.id.myprofilefragment, fragment);
+
+        	            	fragmentTransaction.commit();
+        				}				
+        			});
+        			adb.setNegativeButton("No", null);
+        			adb.show();
+            	}
+            	if(flag == 3){
+            		adb.setTitle("Confirm Add Friend");
+        			adb.setMessage("Do you want to add "+friendName+" "+friendSurname+" as friend?");
+        			adb.setIcon(R.drawable.add);			
+        			adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
+        				public void onClick(DialogInterface dialog, int which) {
+        					addfriend();
+        					Bundle bundle= new Bundle();
+        					flag=2;
+        	            	bundle.putInt("flag", flag);
+        	            	bundle.putString("friendName",friendName);
+        	            	bundle.putString("friendSurname",friendSurname);
+        	            	bundle.putString("friendPhoto",friendPhoto);          
+        	            	bundle.putInt("friendID",friendID);
+        	            	
+        	            	MyProfileFragment fragment=new MyProfileFragment();
+        	            	fragment.setArguments(bundle);
+        	            	
+        	            	FragmentManager fragmentManager = getActivity().getFragmentManager();
+        	            	FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        	            	fragmentTransaction.replace(R.id.myprofilefragment, fragment);
+
+        	            	fragmentTransaction.commit();
+        				}				
+        			});
+        			adb.setNegativeButton("No", null);
+        			adb.show();
+            	}
+            	if(flag == 4){
+            		adb.setTitle("Confirm Friend Request");
+        			adb.setMessage("Do you want to be friend with "+friendName+" "+friendSurname+" ?");
+        			adb.setIcon(R.drawable.add);			
+        			adb.setPositiveButton("Confirm", new AlertDialog.OnClickListener() {
+        				public void onClick(DialogInterface dialog, int which) {
+        					confirmfriend();
+        					Bundle bundle= new Bundle();
+        					flag=1;
+        	            	bundle.putInt("flag", flag);
+        	            	bundle.putString("friendName",friendName);
+        	            	bundle.putString("friendSurname",friendSurname);
+        	            	bundle.putString("friendPhoto",friendPhoto);          
+        	            	bundle.putInt("friendID",friendID);
+        	            	
+        	            	MyProfileFragment fragment=new MyProfileFragment();
+        	            	fragment.setArguments(bundle);
+        	            	
+        	            	FragmentManager fragmentManager = getActivity().getFragmentManager();
+        	            	FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        	            	fragmentTransaction.replace(R.id.myprofilefragment, fragment);
+
+        	            	fragmentTransaction.commit();
+        				}				
+        			});
+        			adb.setNegativeButton("Decline", new AlertDialog.OnClickListener() {
+        				public void onClick(DialogInterface dialog, int which) {
+        					deletefriend();
+        					Bundle bundle= new Bundle();
+        					flag=3;
+        	            	bundle.putInt("flag", flag);
+        	            	bundle.putString("friendName",friendName);
+        	            	bundle.putString("friendSurname",friendSurname);
+        	            	bundle.putString("friendPhoto",friendPhoto);          
+        	            	bundle.putInt("friendID",friendID);
+        	            	
+        	            	MyProfileFragment fragment=new MyProfileFragment();
+        	            	fragment.setArguments(bundle);
+        	            	
+        	            	FragmentManager fragmentManager = getActivity().getFragmentManager();
+        	            	FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        	            	fragmentTransaction.replace(R.id.myprofilefragment, fragment);
+
+        	            	fragmentTransaction.commit();
+        				}				
+        			});
+        			adb.show();
+            	}
+            	
+            }
+		});
     	if(flag==0){
     		username.setText(user.getName().concat(" ").concat(user.getSurname()) );
     		age.setText(Integer.toString(user.getAge()));
@@ -116,7 +266,7 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
         	if(flag==1){
         		username.setText(friendName+" "+friendSurname);
         		new LoadImage().execute(friendPhoto);
-        		editProfile.setText("UnFriend");
+        		editProfile.setText("Unfriend");
         		editProfile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.delete, 0, 0, 0);
         	}
         	if(flag==2){
@@ -134,7 +284,7 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
         	if(flag==4){
         		username.setText(friendName+" "+friendSurname);
         		new LoadImage().execute(friendPhoto);
-        		editProfile.setText("Accept Request");
+        		editProfile.setText("Accept/Decline Request");
         		editProfile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.confirm, 0, 0, 0);
         	}
     	}      
@@ -334,7 +484,7 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
         // bounds, since that's the origin for the positioning animation
         // properties (X, Y).
         thumbView.getGlobalVisibleRect(startBounds);
-        getView().findViewById(R.id.container)
+        getView().findViewById(R.id.myprofilefragment)
                 .getGlobalVisibleRect(finalBounds, globalOffset);
         startBounds.offset(-globalOffset.x, -globalOffset.y);
         finalBounds.offset(-globalOffset.x, -globalOffset.y);
@@ -446,5 +596,45 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
                 mCurrentAnimator = set;
             }
         });
-    }
+       
+    } 
+    public void deletefriend(){
+    	HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/friends/delete_friend.php?userID="+user.getUserID()+"&friendID="+Integer.toString(friendID));
+    	HttpClient httpclient = new DefaultHttpClient();
+        try {
+			httpclient.execute(httppost);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+     }
+    public void addfriend(){
+    	HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/friends/add_friend.php?userID="+user.getUserID()+"&friendID="+Integer.toString(friendID));
+    	HttpClient httpclient = new DefaultHttpClient();
+        try {
+			httpclient.execute(httppost);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+     }
+    public void confirmfriend(){
+    	HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/friends/accept_friend.php?userID="+user.getUserID()+"&friendID="+Integer.toString(friendID));
+    	HttpClient httpclient = new DefaultHttpClient();
+        try {
+			httpclient.execute(httppost);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+     }
 }

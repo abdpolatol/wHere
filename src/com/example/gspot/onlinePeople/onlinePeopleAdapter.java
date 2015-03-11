@@ -75,7 +75,7 @@ public class onlinePeopleAdapter  extends BaseAdapter {
             public void onClick(View v) {
             	String response="";
             	HttpClient httpclient = new DefaultHttpClient();
-                HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/isFriend.php?userID="+user.getUserID()+"&friendID="+m.getUserID());
+                HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/friends/isFriend.php?userID="+user.getUserID()+"&friendID="+m.getUserID());
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 try {
 					response = httpclient.execute(httppost, responseHandler);
@@ -87,12 +87,12 @@ public class onlinePeopleAdapter  extends BaseAdapter {
 					e.printStackTrace();
 				}
                 int flag=Integer.parseInt(response);
+               
             	Bundle bundle= new Bundle();
             	bundle.putInt("flag", flag);
             	bundle.putString("friendName",m.getName());
             	bundle.putString("friendSurname",m.getSurname());
             	bundle.putString("friendPhoto",m.getImageUrl());          
-            	System.out.println(m.getSurname());
             	bundle.putInt("friendID",m.getUserID());
             	
             	MyProfileFragment fragment=new MyProfileFragment();

@@ -70,7 +70,7 @@ public class FriendsFragment extends Fragment {
         
 
  
-        url = "http://www.ceng.metu.edu.tr/~e1818871/show_friends.php?userID="+Integer.toString(user.getUserID());
+        url = "http://www.ceng.metu.edu.tr/~e1818871/friends/show_friends.php?userID="+Integer.toString(user.getUserID());
         // Creating volley request obj
         JsonArrayRequest movieReq = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
