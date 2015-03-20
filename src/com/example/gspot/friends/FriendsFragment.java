@@ -39,6 +39,7 @@ public class FriendsFragment extends Fragment {
     private FriendsAdapter adapter;
     private PlaceClass place;
     private User user;
+    int f;
     private static final String TAG = onlinePeopleFragment.class.getSimpleName();
 	
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,23 +57,23 @@ public class FriendsFragment extends Fragment {
         user = (User) i.getParcelableExtra("user");
 		place = (PlaceClass) i.getParcelableExtra("place");
 		listView = (ListView) getView().findViewById(R.id.friendsList);
-        adapter = new FriendsAdapter(getActivity(), userList);
-        listView.setAdapter(adapter);
+        
         userList.clear();
         pDialog = new ProgressDialog(getActivity());
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
         pDialog.show();
- 
+        
         // changing action bar color
         getActivity().getActionBar().setBackgroundDrawable(
                 new ColorDrawable(Color.parseColor("#1b1b1b")));
         
-
- 
+   
+        
+        // Adding request to request queue
         url = "http://www.ceng.metu.edu.tr/~e1818871/friends/show_friends.php?userID="+Integer.toString(user.getUserID());
         // Creating volley request obj
-        JsonArrayRequest movieReq = new JsonArrayRequest(url,
+        JsonArrayRequest movieReq1 = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -82,24 +83,26 @@ public class FriendsFragment extends Fragment {
                         // Parsing json
                         for (int i = 0; i < response.length(); i++) {
                             try {
- 
+                            	
                                 JSONObject obj = response.getJSONObject(i);
                                 User temp_user = new User();
+                               
                                 temp_user.setName(obj.getString("name"));
                                 temp_user.setSurname(obj.getString("surname"));
                                 temp_user.setImageUrl(obj.getString("profile_pic"));
                                 temp_user.setUserID(Integer.parseInt(obj.getString("userID")));
-                                
+                                if(Integer.parseInt(obj.getString("status"))==0)
+                                	f++;
                                 userList.add(temp_user);
- 
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                            }
- 
+                            }                            
                         }
- 
+                        
                         // notifying list adapter about data changes
                         // so that it renders the list view with updated data
+                        adapter = new FriendsAdapter(getActivity(), userList,f);
+                        listView.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
@@ -112,9 +115,9 @@ public class FriendsFragment extends Fragment {
                 });
  
         // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(movieReq);
-		
-	}
+        AppController.getInstance().addToRequestQueue(movieReq1);
+        }
+	
 	@Override
     public void onDestroy() {
         super.onDestroy();

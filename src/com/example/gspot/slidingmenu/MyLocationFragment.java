@@ -28,6 +28,8 @@ import com.example.gspot.PlaceClass;
 import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.newPostScreen;
+import com.example.gspot.newUserPage;
+import com.example.gspot.gcm.NotificationReceiverActivity;
 import com.example.gspot.placesListView.LazyAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -44,6 +46,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -96,28 +101,18 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     	map.getUiSettings().setMyLocationButtonEnabled(true);
     	map.setMyLocationEnabled(true);
     	MapsInitializer.initialize(this.getActivity());
-		
-		// Updates the location and zoom of the MapView
-		
-		
         return rootView;
     }
 	
 	public void onStart() {
         super.onStart();
-
-     
         Intent i = getActivity().getIntent();
         user = (User) i.getParcelableExtra("user");
         list=(ListView)getView().findViewById(R.id.list);
         final AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        //setUpMapIfNeeded();
-        
+        //setUpMapIfNeeded();    
         mLocationClient = new LocationClient(getActivity(), this, this);
-        mLocationClient.connect();
-        
-        
-		
+        mLocationClient.connect();	
         list.setOnItemClickListener(new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -131,13 +126,28 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 					user.setCheckInFlag(1);
 					i.putExtra("place", nearbyplaces.get(position));
 	                i.putExtra("user",user);
-	                place=nearbyplaces.get(position);
-	                	                
-	                checkinFunction();
+	                place=nearbyplaces.get(position);	                	                
+	                checkinFunction();	                
+	                Intent intent = new Intent(getActivity(), NotificationReceiverActivity.class);
+	                PendingIntent pIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
+
+	                // build notification
+	                // the addAction re-use the same intent to keep the example short
+	                Notification n  = new Notification.Builder(getActivity())
+	                        .setContentTitle("Your Friend was " + "test@gmail.com")
+	                        .setContentText("Subject")
+	                        .setSmallIcon(R.drawable.logo)
+	                        .setContentIntent(pIntent)
+	                        .setAutoCancel(true).build();
+	                        //.addAction(R.drawable.icon, "Call", pIntent)
+	                        //.addAction(R.drawable.icon, "More", pIntent)
+	                        //.addAction(R.drawable.icon, "And more", pIntent).build();
+	                
+	                NotificationManager notificationManager = 
+	                  (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+	                notificationManager.notify(0, n); 
 	                startActivity(i);
-	                getActivity().finish();
-	
-					
+	                getActivity().finish();					
 				}				
 			});
 			adb.setNegativeButton("No", null);
@@ -154,13 +164,10 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 						user.setCheckInFlag(1);
 						i.putExtra("place", nearbyplaces.get(position));
 		                i.putExtra("user",user);
-		                place=nearbyplaces.get(position);
-		                
+		                place=nearbyplaces.get(position);		                
 		                checkinFunction();
 		                startActivity(i);
-		                getActivity().finish();
-		
-						
+		                getActivity().finish();						
 					}				
 				});
 				adb.setNegativeButton("No", null);
@@ -258,7 +265,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                     		if(nearbyplaces.size()!=0){
                     			nearbyplaces.clear();
                     		}// onur's api AIzaSyBg0q_Qi-IbgaVVBCX3MadAt2rFMkwvZWU
-                    		String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=20&key=AIzaSyBPz4pH4Hqbodd5vmOvGb2BYpLLN_Ir1uM&location=";
+                    		String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=20&key=AIzaSyBN87s3ZpQkKdw1aVjWWj0qvBEIZgiyzyg&location=";
                     		query=query.concat(String.valueOf(mCurrentLocation.getLatitude())+","+String.valueOf(mCurrentLocation.getLongitude()));                    		
                     		
                     		new HttpTask().execute(query); 

@@ -29,11 +29,14 @@ public class FriendsAdapter extends BaseAdapter {
     private List<User> userItems;
     User user;
     int flag;
+    int pending_count;
+    int cnt;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     
-    public FriendsAdapter(Activity activity, List<User> userList) {
+    public FriendsAdapter(Activity activity, List<User> userList,int pending_count) {
         this.activity = activity;
         this.userItems = userList;
+        this.pending_count=pending_count;
     }
 	@Override
     public int getCount() {
@@ -51,8 +54,8 @@ public class FriendsAdapter extends BaseAdapter {
     }
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		
+	public View getView(final int position, View convertView, ViewGroup parent) {
+		 
 		Intent i = activity.getIntent();
         user = (User) i.getParcelableExtra("user");
         
@@ -82,14 +85,22 @@ public class FriendsAdapter extends BaseAdapter {
 	        title.setText(m.getName()+" " +m.getSurname());
 	        
 	        // rating
+	        if(position<=pending_count-1){
+	        	rating.setText("Pending Request");
+	        }
+	        else
 	        rating.setText("Online ");
 	        
 	        thumbNail.setOnClickListener(new OnClickListener(){
 	        	 @Override
 	             public void onClick(View v) {
-	             	
+	        		 
 	             	Bundle bundle= new Bundle();
-	             	bundle.putInt("flag", 1);
+	             	bundle.putInt("flag", 4);
+	             	if(position>pending_count-1){
+	             		bundle.putInt("flag", 1);
+	             	}
+	             	
 	             	bundle.putString("friendName",m.getName());
 	             	bundle.putString("friendSurname",m.getSurname());
 	             	bundle.putString("friendPhoto",m.getImageUrl());          	             	

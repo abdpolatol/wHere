@@ -30,7 +30,7 @@
         android:value="@integer/google_play_services_version" />
         <meta-data
     android:name="com.google.android.maps.v2.API_KEY"
-    android:value="AIzaSyBouUIMDdn_xoxFTFlOh2lgVZjvfkDyS3M"/>
+    android:value="AIzaSyBN87s3ZpQkKdw1aVjWWj0qvBEIZgiyzyg"/>
         
         <uses-library android:name="com.google.android.maps" />
          android:debuggable="true"
@@ -52,6 +52,11 @@
 		</activity>
         <activity
             android:name=".myprofile.MyProfile"
+            android:label="">
+
+        </activity>
+        <activity
+            android:name=".gcm.NotificationReceiverActivity"
             android:label="">
 
         </activity>

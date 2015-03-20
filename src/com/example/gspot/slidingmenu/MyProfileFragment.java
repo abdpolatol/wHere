@@ -78,6 +78,7 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
     int friendID;
     String friendName,friendSurname,friendPhoto;
 	int 	flag;
+	int flag1;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -255,6 +256,7 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
             	 
             	}
     		});
+    		flag1=1;
     		registerForContextMenu(profileImage);
     		showTable();
     	}
@@ -268,17 +270,23 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
         		new LoadImage().execute(friendPhoto);
         		editProfile.setText("Unfriend");
         		editProfile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.delete, 0, 0, 0);
+        		flag1=0;
+        		registerForContextMenu(profileImage);
         	}
         	if(flag==2){
         		username.setText(friendName+" "+friendSurname);
         		new LoadImage().execute(friendPhoto);
         		editProfile.setText("In Progress");
         		editProfile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.waiting, 0, 0, 0);
+        		flag1=0;
+        		registerForContextMenu(profileImage);
         	}
         	if(flag==3){
         		username.setText(friendName+" "+friendSurname);
         		new LoadImage().execute(friendPhoto);
         		editProfile.setText("Add Friend");
+        		flag1=0;
+        		registerForContextMenu(profileImage);
         		//editProfile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.waiting, 0, 0, 0);
         	}
         	if(flag==4){
@@ -286,6 +294,8 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
         		new LoadImage().execute(friendPhoto);
         		editProfile.setText("Accept/Decline Request");
         		editProfile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.confirm, 0, 0, 0);
+        		flag1=0;
+        		registerForContextMenu(profileImage);
         	}
     	}      
     }
@@ -443,9 +453,15 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)  
     {  
             super.onCreateContextMenu(menu, v, menuInfo);  
+            if(flag1==1){
             menu.setHeaderTitle("Profile Picture Settings");    
             menu.add(0, v.getId(), 0, "Show picture");//groupId, itemId, order, title   
-            menu.add(0, v.getId(), 0, "Change picture");   
+            menu.add(0, v.getId(), 0, "Change picture");  
+            }
+            else{
+            	menu.setHeaderTitle("Profile Picture");    
+                menu.add(0, v.getId(), 0, "Show picture");
+            }
     }
     @Override    
     public boolean onContextItemSelected(MenuItem item){    

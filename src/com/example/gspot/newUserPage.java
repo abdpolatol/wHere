@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -21,6 +24,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.gspot.friends.FriendsFragment;
+import com.example.gspot.gcm.NotificationReceiverActivity;
 import com.example.gspot.slidingmenu.MyLocationFragment;
 import com.example.gspot.slidingmenu.MyProfileFragment;
 import com.example.gspot.slidingmenu.NavDrawerItem;
@@ -231,6 +235,7 @@ public class newUserPage extends Activity{
     	        		Intent i= new Intent(newUserPage.this, MainActivity.class); 
     	        		startActivity(i);
     	                finish();
+    	                
     					
     				}				
     			});
