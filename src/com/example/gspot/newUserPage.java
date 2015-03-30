@@ -70,7 +70,7 @@ public class newUserPage extends Activity{
                 .obtainTypedArray(R.array.nav_drawer_icons);
  
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.setScrimColor(0);
+        //mDrawerLayout.setScrimColor(0);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
  
         navDrawerItems = new ArrayList<NavDrawerItem>();

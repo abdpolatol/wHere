@@ -32,9 +32,15 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -435,6 +441,7 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
            		} catch (Exception e) {
            			e.printStackTrace();
            		}
+           		bitmap=getRoundedCroppedBitmap(bitmap,300);
            		return bitmap;
            }
            protected void onPostExecute(Bitmap image) {
@@ -459,8 +466,7 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
             menu.add(0, v.getId(), 0, "Change picture");  
             }
             else{
-            	menu.setHeaderTitle("Profile Picture");    
-                menu.add(0, v.getId(), 0, "Show picture");
+            	zoomImageFromThumb(profileImage, 1);
             }
     }
     @Override    
@@ -653,4 +659,53 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
 			e.printStackTrace();
 		}
      }
+    public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
+        int targetWidth = 50;
+        int targetHeight = 50;
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth, 
+                            targetHeight,Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(targetBitmap);
+        Path path = new Path();
+        path.addCircle(((float) targetWidth - 1) / 2,
+            ((float) targetHeight - 1) / 2,
+            (Math.min(((float) targetWidth), 
+            ((float) targetHeight)) / 2),
+            Path.Direction.CCW);
+
+        canvas.clipPath(path);
+        Bitmap sourceBitmap = scaleBitmapImage;
+        canvas.drawBitmap(sourceBitmap, 
+            new Rect(0, 0, sourceBitmap.getWidth(),
+            sourceBitmap.getHeight()), 
+            new Rect(0, 0, targetWidth, targetHeight), null);
+        return targetBitmap;
+    }
+    public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
+        Bitmap finalBitmap;
+        if(bitmap.getWidth() != radius || bitmap.getHeight() != radius)
+            finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius, false);
+        else
+            finalBitmap = bitmap;
+        Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),
+                finalBitmap.getHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
+
+        paint.setAntiAlias(true);
+     
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(Color.parseColor("#BAB399"));
+        canvas.drawCircle(finalBitmap.getWidth() / 2+0.7f, finalBitmap.getHeight() / 2+0.7f,
+                finalBitmap.getWidth() / 2+0.1f, paint);
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+        canvas.drawBitmap(finalBitmap, rect, rect, paint);
+
+
+                return output;
+    }
 }

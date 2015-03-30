@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/friendsFragment"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity" 
+    android:background="@drawable/background">
  
     <ListView
         android:id="@+id/friendsList"
@@ -11,6 +12,7 @@
         android:layout_height="wrap_content"
         android:divider="@color/list_divider"
         android:dividerHeight="1dp"
+         
         android:listSelector="@drawable/list_row_selector_online_people" />
  
 </RelativeLayout>

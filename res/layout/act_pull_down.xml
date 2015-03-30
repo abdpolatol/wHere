@@ -10,25 +10,20 @@
     <ImageView
         android:id="@+id/background_img"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="-100dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="-50dp"
         android:contentDescription="@null"
         android:scaleType="fitXY"
         android:src="@drawable/scrollview_header" />
 
-    <com.example.gspot.myprofile.PullScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:headerHeight="300dp"
-        app:headerVisibleHeight="100dp"
-        android:fillViewport="true">
+    
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/transparent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="100dp">
 
             <RelativeLayout
                 android:id="@+id/scroll_view_head"
@@ -42,7 +37,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="85dp"
                     android:layout_marginTop="27dp"
-                    android:background="@drawable/card_avatar_bar">
+                    android:background="#fdcbaf"
+                    >
 
                     <TextView
                         android:id="@+id/attention_user"
@@ -67,42 +63,41 @@
                         android:id="@+id/user_city"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="103dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginTop="4dp"
                         android:ellipsize="end"
                         android:singleLine="true"
                         android:textColor="#A1A1A1"
-                        android:textSize="12sp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:id="@+id/user_age"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="103dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_below="@id/user_city"
                         android:layout_marginTop="4dp"
                         android:singleLine="true"
                         android:ellipsize="end"
-                        android:textSize="12sp"
+                        android:textSize="15dp"
                         android:textColor="#A1A1A1" />
                 </RelativeLayout>
 
                 <ImageView
                     android:id="@+id/user_avatar"
-                    android:layout_width="68dp"
-                    android:layout_height="68dp"
-                    android:padding="1px"
-                    android:background="@android:color/white"
-                    android:layout_marginLeft="21dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:padding="3dp"                    
+                    android:background="@drawable/shape_circle_image"
+                    android:layout_centerInParent="true"
                     android:contentDescription="@null"
                     android:src="@drawable/avatar_default" />
 
                 <TextView
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/user_avatar"
-                    android:layout_marginLeft="13dp"
+                    android:layout_height="wrap_content"                    
+                    android:layout_marginLeft="10dp"
                     android:singleLine="true"
                     android:ellipsize="end"
                     android:shadowColor="@android:color/black"
@@ -151,7 +146,14 @@
                     android:textColor="#B1B1B1" />
 
             </RelativeLayout>
-
+<com.example.gspot.myprofile.PullScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:headerHeight="300dp"
+        app:headerVisibleHeight="100dp"
+        android:fillViewport="true"
+        >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -181,8 +183,9 @@
 
                 
             </LinearLayout>
-        </LinearLayout>
+        
     </com.example.gspot.myprofile.PullScrollView>
+    </LinearLayout>
  <ImageView
         android:id="@+id/expanded_image"
         android:layout_width="match_parent"

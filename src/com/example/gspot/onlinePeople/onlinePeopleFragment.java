@@ -62,8 +62,7 @@ public class onlinePeopleFragment extends Fragment {
         pDialog.show();
  
         // changing action bar color
-        getActivity().getActionBar().setBackgroundDrawable(
-                new ColorDrawable(Color.parseColor("#1b1b1b")));
+       
         
 
  

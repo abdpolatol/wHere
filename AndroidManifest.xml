@@ -72,7 +72,7 @@
         <activity
             android:name=".Image_Activity.DownloadImage"
             android:label="" />
-        <activity android:name=".UserPage" android:theme="@style/Theme.AppCompat.Light"/>
+        <activity android:name=".UserPage" />
         <activity android:name=".RegisterPage"/>
         <activity android:name=".LoginPage"/>
         <activity android:name=".newPostScreen"/>

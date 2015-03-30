@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_row_selector_online_people"
+    android:background="#FFD6C0"
+    android:listSelector="@drawable/list_selector"
     android:padding="8dp" >
  
     <!-- Thumbnail Image -->
