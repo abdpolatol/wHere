@@ -636,7 +636,7 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
     public void addfriend(){
     	HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/friends/add_friend.php?userID="+user.getUserID()+"&friendID="+Integer.toString(friendID));
     	HttpClient httpclient = new DefaultHttpClient();
-    	HttpPost httppost2 = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/processmessage.php?userID="+Integer.toString(friendID)+"&userMsg=1"+"&name="+user.getName()+"&surname="+user.getSurname());
+    	HttpPost httppost2 = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/processmessage.php?mode=1&userID="+Integer.toString(friendID)+"&name="+user.getName()+"&surname="+user.getSurname());
         try {
 			httpclient.execute(httppost);
 			httpclient.execute(httppost2);

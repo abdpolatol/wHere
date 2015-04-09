@@ -244,16 +244,17 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                     		if(nearbyplaces.size()!=0){
                     			nearbyplaces.clear();
                     		}// onur's api AIzaSyBg0q_Qi-IbgaVVBCX3MadAt2rFMkwvZWU
-                    		String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=100&key=AIzaSyBN87s3ZpQkKdw1aVjWWj0qvBEIZgiyzyg&location=";
-                    		query=query.concat(String.valueOf(mCurrentLocation.getLatitude())+","+String.valueOf(mCurrentLocation.getLongitude()));                    		
-                    		
-                    		new HttpTask().execute(query); 
+                    		 
                     	}
                     	
                     }
                 });
         
         mCurrentLocation = mLocationClient.getLastLocation();
+        String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=100&key=AIzaSyBN87s3ZpQkKdw1aVjWWj0qvBEIZgiyzyg&location=";
+		query=query.concat(String.valueOf(mCurrentLocation.getLatitude())+","+String.valueOf(mCurrentLocation.getLongitude()));                    		
+		
+		new HttpTask().execute(query);
         
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 15);
 		map.animateCamera(cameraUpdate);
@@ -462,6 +463,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/checkin.php");
         HttpPost httppost2 = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/add_place.php");
+        
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Calendar cal = Calendar.getInstance();
             List<NameValuePair> nameValuePairs_checkin = new ArrayList<NameValuePair>(3);
@@ -484,6 +486,10 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         
        
         httpclient.execute(httppost);
+        HttpPost httppost3 = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/processmessage.php?mode=2&name="+
+        					user.getName()+"&surname="+user.getSurname()+"&placename="+place.getName().trim()+
+        					"&userID="+user.getUserID());
+        httpclient.execute(httppost3);
         
         }catch(Exception e){
         	
