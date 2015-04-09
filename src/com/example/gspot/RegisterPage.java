@@ -40,8 +40,7 @@ public class RegisterPage extends Activity {
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
     ProgressDialog dialog = null;
-    Spinner s;
-    
+    Spinner s;    
     Calendar myCalendar = Calendar.getInstance();
     
     @Override
@@ -58,8 +57,7 @@ public class RegisterPage extends Activity {
         remail = (EditText)findViewById(R.id.regmail);
         runame = (EditText)findViewById(R.id.reguname);
 		b3 = (Button)findViewById(R.id.completeregister);
-		s = (Spinner) findViewById(R.id.gender);
-		
+		s = (Spinner) findViewById(R.id.gender);		
 		birthday = (EditText)findViewById(R.id.regbirthday);
 		birthday.setKeyListener(null);
         
@@ -77,8 +75,7 @@ public class RegisterPage extends Activity {
                       }).start();               
             }
         });
-        
-        
+              
     	final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
     	    @Override
@@ -104,9 +101,7 @@ public class RegisterPage extends Activity {
 	        }
 	    });
     }
-    
-    
-    
+            
     public void register(){
 		try{            
             System.out.println("saddasdadsadasdadadasdasd");
@@ -120,9 +115,7 @@ public class RegisterPage extends Activity {
             }
             else{
             	tempgender = "M";
-            }
-            
-            
+            }                        
 	            nameValuePairs = new ArrayList<NameValuePair>(9);
 	            // Always use the same variable name for posting i.e the android side variable name and php side variable name should be similar, 
 	            nameValuePairs.add(new BasicNameValuePair("username",runame.getText().toString().trim()));  // $Edittext_value = $_POST['Edittext_value'];
@@ -173,8 +166,7 @@ public class RegisterPage extends Activity {
         }catch(Exception e){
             dialog.dismiss();
             System.out.println("Exception : " + e.getMessage());
-        }
-		
+        }		
 	}
 
 	private void showUsernameAlert() {
@@ -193,8 +185,7 @@ public class RegisterPage extends Activity {
                 AlertDialog alert = builder.create();
                 alert.show();               
             }
-        });
-		
+        });		
 	}
 	private void showNullAlert() {
 		RegisterPage.this.runOnUiThread(new Runnable() {
@@ -212,8 +203,7 @@ public class RegisterPage extends Activity {
                 AlertDialog alert = builder.create();
                 alert.show();               
             }
-        });
-		
+        });		
 	}
 	private void showDBAlert() {
 		RegisterPage.this.runOnUiThread(new Runnable() {
@@ -236,26 +226,13 @@ public class RegisterPage extends Activity {
 	}
 	/////////////////////////////////////////////////////////////////////
 	
-	
-	
-
-
-
-
-	  private void updateLabel() {
+	private void updateLabel() {
 
 	    String myFormat = "yyyy-MM-dd"; //In which you need put here
 	    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
 	    birthday.setText(sdf.format(myCalendar.getTime()));
-	    }
-	
-	
-	
-	
-	
-	
-	
+	    }	
 	
 	///////////////////////////////////////////////////////////////////////
 	private void showPasswordAlert() {

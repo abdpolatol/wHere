@@ -28,7 +28,6 @@ import com.example.gspot.PlaceClass;
 import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.newPostScreen;
-import com.example.gspot.gcm.NotificationReceiverActivity;
 import com.example.gspot.placesListView.LazyAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -47,9 +46,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -128,25 +124,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 					i.putExtra("place", nearbyplaces.get(position));
 	                i.putExtra("user",user);
 	                place=nearbyplaces.get(position);	                	                
-	                checkinFunction();	                
-	                Intent intent = new Intent(getActivity(), NotificationReceiverActivity.class);
-	                PendingIntent pIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
-
-	                // build notification
-	                // the addAction re-use the same intent to keep the example short
-	                Notification n  = new Notification.Builder(getActivity())
-	                        .setContentTitle("Your Friend was " + "test@gmail.com")
-	                        .setContentText("Subject")
-	                        .setSmallIcon(R.drawable.logo)
-	                        .setContentIntent(pIntent)
-	                        .setAutoCancel(true).build();
-	                        //.addAction(R.drawable.icon, "Call", pIntent)
-	                        //.addAction(R.drawable.icon, "More", pIntent)
-	                        //.addAction(R.drawable.icon, "And more", pIntent).build();
-	                
-	                NotificationManager notificationManager = 
-	                  (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-	                notificationManager.notify(0, n); 
+	                checkinFunction();	                	                	               
 	                startActivity(i);
 	                getActivity().finish();					
 				}				
