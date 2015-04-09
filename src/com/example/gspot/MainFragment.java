@@ -1,5 +1,6 @@
 package com.example.gspot;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -26,9 +28,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +47,8 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.LoginButton;
-
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.example.gspot.gcm.ApplicationConstants;
 
 public class MainFragment extends Fragment{
 	private static final String TAG = "MainFragment";
@@ -62,6 +67,8 @@ public class MainFragment extends Fragment{
     public static SharedPreferences.Editor loginPrefsEditor;
     private String uname,upass;
     private boolean saveLogin;
+    String regID="";
+    GoogleCloudMessaging gcmObj;
 	public View onCreateView(LayoutInflater inflater, 
 	        ViewGroup container, 
 	        Bundle savedInstanceState) {
@@ -85,11 +92,7 @@ public class MainFragment extends Fragment{
         upass = loginPreferences.getString("password", "");
         
         if (saveLogin == true) {
-        	login();
-        	
-        	
-        	
-            System.out.println("asdasdsd");
+        	login();   
         }
         
         b.setOnClickListener(new OnClickListener() {
@@ -175,6 +178,41 @@ public class MainFragment extends Fragment{
 	    super.onSaveInstanceState(outState);
 	    uiHelper.onSaveInstanceState(outState);
 	}
+	private void registerInBackground(final String emailID) {
+		new AsyncTask<Void, Void, String>() {
+			@Override
+			protected String doInBackground(Void... params) {
+				String msg = "";
+				try {
+					if (gcmObj == null) {
+						gcmObj = GoogleCloudMessaging.getInstance(getActivity().getApplicationContext());
+					}
+					regID = gcmObj
+							.register(ApplicationConstants.GOOGLE_PROJ_ID);
+					msg = "Registration ID :" + regID;
+					
+				} catch (IOException ex) {
+					msg = "Error :" + ex.getMessage();
+				}
+				return msg;
+			}
+
+			@Override
+			protected void onPostExecute(String msg) {
+				httpclient=new DefaultHttpClient();
+                httppost= new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/gcm_register.php?regID="+regID+"&userID="+emailID);
+                try {
+					httpclient.execute(httppost);
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}.execute(null, null, null);
+	}
 	void login(){
         try{            
         	if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -187,6 +225,7 @@ public class MainFragment extends Fragment{
             if(saveLogin==false){
             	nameValuePairs.add(new BasicNameValuePair("username",et.getText().toString().trim())); 
             	nameValuePairs.add(new BasicNameValuePair("password",pass.getText().toString().trim()));
+            	uname=et.getText().toString().trim();
             }
             else{
             	nameValuePairs.add(new BasicNameValuePair("username",uname.trim())); 
@@ -199,7 +238,7 @@ public class MainFragment extends Fragment{
             System.out.println(response);
              
             if(response.equalsIgnoreCase("User Found")){
-            	
+            	registerInBackground(uname.trim());            	
             	InputStream is = null;
             	httpclient=new DefaultHttpClient();
                 httppost= new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/session.php");
@@ -267,7 +306,7 @@ public class MainFragment extends Fragment{
                         Toast.makeText(getActivity(),"Login Success", Toast.LENGTH_SHORT).show();
                     }
                 });
-                System.out.println("üst");
+               
                 //dialog.dismiss();
                 // keep logged in*****
                 if(saveLogin==false){
@@ -277,7 +316,7 @@ public class MainFragment extends Fragment{
                 loginPrefsEditor.commit();
                 }
                 //***************
-                System.out.println("alt");
+               
                 Intent i= new Intent(getActivity(), newUserPage.class);
                 
                 i.putExtra("user", user);

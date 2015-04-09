@@ -39,7 +39,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -265,7 +267,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                     		if(nearbyplaces.size()!=0){
                     			nearbyplaces.clear();
                     		}// onur's api AIzaSyBg0q_Qi-IbgaVVBCX3MadAt2rFMkwvZWU
-                    		String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=20&key=AIzaSyBN87s3ZpQkKdw1aVjWWj0qvBEIZgiyzyg&location=";
+                    		String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=100&key=AIzaSyBN87s3ZpQkKdw1aVjWWj0qvBEIZgiyzyg&location=";
                     		query=query.concat(String.valueOf(mCurrentLocation.getLatitude())+","+String.valueOf(mCurrentLocation.getLongitude()));                    		
                     		
                     		new HttpTask().execute(query); 
@@ -382,8 +384,15 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 			if(lines[i].toLowerCase().contains("\"place_id\"")){
 				placeIDs.add(lines[i].substring(lines[i].indexOf(": \"")+3,lines[i].indexOf("\",")));
 				nearbyplaces.get(counter).setId(lines[i].substring(lines[i].indexOf(": \"")+3,lines[i].indexOf("\",")));
+				
+				LatLng ltlng = new LatLng(Double.parseDouble(nearbyplaces.get(counter).getLat()), Double.parseDouble(nearbyplaces.get(counter).getLon()));
+				MarkerOptions marker = new MarkerOptions().position(ltlng).title(nearbyplaces.get(counter).getName());
+				marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.orange));		
+				map.addMarker(marker);
+				
 				counter++;
-				}  			
+				
+			}  			
 		}
 		
 		
