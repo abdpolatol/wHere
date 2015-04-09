@@ -28,7 +28,6 @@ import com.example.gspot.PlaceClass;
 import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.newPostScreen;
-import com.example.gspot.newUserPage;
 import com.example.gspot.gcm.NotificationReceiverActivity;
 import com.example.gspot.placesListView.LazyAdapter;
 import com.google.android.gms.common.ConnectionResult;
