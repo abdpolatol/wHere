@@ -73,7 +73,7 @@ public class GCMNotificationIntentService extends IntentService {
 	        	mNotifyBuilder.setContentTitle("Friend Request")
 	                .setContentText(notificationMsg[1]+" "+notificationMsg[2]+ " sent you a friend request.");
 	        }
-	        if(notificationMsg[0].equals("2")){
+	        else if(notificationMsg[0].equals("2")){
 	        	mNotifyBuilder.setContentTitle("Friend Activity")
 	                .setContentText(notificationMsg[1]+" "+notificationMsg[2]+ " was at "+notificationMsg[3]+" 1 minute ago");
 	        }

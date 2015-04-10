@@ -48,6 +48,7 @@ import android.widget.Toast;
 import com.example.gspot.R;
 import com.example.gspot.User;
 import com.example.gspot.newUserPage;
+import com.example.gspot.slidingmenu.MyProfileFragment;
 
 public class UploadPicture extends Activity {
     private Uri mImageCaptureUri;
@@ -175,7 +176,7 @@ public class UploadPicture extends Activity {
                 // Bitmap photo = extras.getParcelable("data");
                 Log.i("TAG", "Inside Extra " + selectedImagePath);
                 Bitmap photo = (Bitmap) extras.get("data");
-
+                photo = MyProfileFragment.getRoundedCroppedBitmap(photo, 300);
                 selectedImagePath = String.valueOf(System.currentTimeMillis())
                         + ".jpg";
 
@@ -201,6 +202,7 @@ public class UploadPicture extends Activity {
                 Log.i("TAG", "After File Created  " + selectedImagePath);
 
                 Bitmap bm = decodeFile(selectedImagePath);
+                
                 mImageView.setImageBitmap(bm);
             }
 
@@ -271,8 +273,10 @@ public class UploadPicture extends Activity {
                 Log.e("in orientation", "" + orientation);
                 bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),
                         bm.getHeight(), m, true);
+                
                 return bitmap;
             }
+            
             return bitmap;
         } catch (Exception e) {
             return null;

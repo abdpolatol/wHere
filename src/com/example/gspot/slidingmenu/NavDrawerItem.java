@@ -1,8 +1,11 @@
 package com.example.gspot.slidingmenu;
 
+import android.graphics.Bitmap;
+
 public class NavDrawerItem {
 	 private String title;
 	    private int icon;
+	    private Bitmap photo;
 	    private String count = "0";
 	    // boolean to set visiblity of the counter
 	    private boolean isCounterVisible = false;
@@ -12,6 +15,10 @@ public class NavDrawerItem {
 	    public NavDrawerItem(String title, int icon){
 	        this.title = title;
 	        this.icon = icon;
+	    }
+	    public NavDrawerItem(String title, Bitmap photo){
+	        this.title = title;
+	        this.photo = photo;
 	    }
 	     
 	    public NavDrawerItem(String title, int icon, boolean isCounterVisible, String count){

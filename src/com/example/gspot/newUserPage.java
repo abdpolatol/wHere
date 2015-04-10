@@ -1,6 +1,14 @@
 package com.example.gspot;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,12 +28,19 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.example.gspot.friends.FriendsAdapter;
 import com.example.gspot.friends.FriendsFragment;
+import com.example.gspot.onlinePeople.AppController;
 import com.example.gspot.slidingmenu.MyLocationFragment;
 import com.example.gspot.slidingmenu.MyProfileFragment;
 import com.example.gspot.slidingmenu.NavDrawerItem;
 import com.example.gspot.slidingmenu.NavDrawerListAdapter;
 import com.example.gspot.slidingmenu.PhotosFragment;
+import com.example.gspot.slidingmenu.friendDrawerAdapter;
 
 public class newUserPage extends Activity{
 
@@ -33,11 +48,12 @@ public class newUserPage extends Activity{
     private String[] navMenuTitles;
     private TypedArray navMenuIcons;
     
-    private ArrayList<NavDrawerItem> navDrawerItems;
+    private ArrayList<NavDrawerItem> navDrawerItems,navDrawerItemsfriend;
     private NavDrawerListAdapter adapter;
-    
+    private friendDrawerAdapter adpt;
+    private List<User> userList = new ArrayList<User>();
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private ListView mDrawerList,mDrawerListfriend;
  // used to store app title
     private CharSequence mTitle;
  // nav drawer title
@@ -47,11 +63,13 @@ public class newUserPage extends Activity{
 	Intent i;
 	User user;
 	PlaceClass place;
+	int f=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainpage);
          i= getIntent();
+         final Activity activity=this;
         user = (User) i.getParcelableExtra("user");
         
         if(user.getCheckInFlag()==1)
@@ -68,9 +86,54 @@ public class newUserPage extends Activity{
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.setScrimColor(0);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
- 
+        mDrawerListfriend= (ListView) findViewById(R.id.list_slidermenufriend);
         navDrawerItems = new ArrayList<NavDrawerItem>();
+        navDrawerItemsfriend = new ArrayList<NavDrawerItem>();
+        String url = "http://www.ceng.metu.edu.tr/~e1818871/friends/show_friends.php?userID="+Integer.toString(user.getUserID());
+        // Creating volley request obj
+        JsonArrayRequest movieReq1 = new JsonArrayRequest(url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        
+                        
  
+                        // Parsing json
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                            	
+                                JSONObject obj = response.getJSONObject(i);
+                                User temp_user = new User();
+                               
+                                temp_user.setName(obj.getString("name"));
+                                temp_user.setSurname(obj.getString("surname"));
+                                temp_user.setImageUrl(obj.getString("profile_pic"));
+                                temp_user.setUserID(Integer.parseInt(obj.getString("userID")));
+                                if(Integer.parseInt(obj.getString("status"))==0)
+                                	f++;
+                                userList.add(temp_user);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }                            
+                        }
+                        
+                        // notifying list adapter about data changes
+                        // so that it renders the list view with updated data
+                        adpt = new friendDrawerAdapter(activity, userList);
+                        mDrawerListfriend.setAdapter(adpt);
+                        adpt.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                       
+ 
+                    }
+                });
+ 
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(movieReq1);
+        
         // adding nav drawer items to array
         // Home
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
