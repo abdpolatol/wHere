@@ -55,6 +55,7 @@ public class GCMNotificationIntentService extends IntentService {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+		
 	        Intent resultIntent = new Intent(this, MainActivity.class);
 	        resultIntent.putExtra("greetjson", greetMsg);
 	        resultIntent.setAction(Intent.ACTION_MAIN);
@@ -76,6 +77,10 @@ public class GCMNotificationIntentService extends IntentService {
 	        else if(notificationMsg[0].equals("2")){
 	        	mNotifyBuilder.setContentTitle("Friend Activity")
 	                .setContentText(notificationMsg[1]+" "+notificationMsg[2]+ " was at "+notificationMsg[3]+" 1 minute ago");
+	        }
+	        else if (notificationMsg[0].equals("3")){
+	        	mNotifyBuilder.setContentTitle("New Message")
+                .setContentText(notificationMsg[1]+" "+notificationMsg[2]+ " sent you a message.");
 	        }
 	        
 	        // Set pending intent

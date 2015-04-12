@@ -82,7 +82,8 @@ public class friendDrawerAdapter extends BaseAdapter {
 	        title.setText(m.getName()+" " +m.getSurname());
 	        
 	        // rating
-	       
+	        
+	        
 	       
 	        
 	        /*

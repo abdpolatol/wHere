@@ -1,23 +1,10 @@
-package com.example.gspot.Post;
+package com.example.gspot.chat;
 
 import java.util.List;
-
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
-import com.example.gspot.R;
-import com.example.gspot.User;
-
-
-
-import com.example.gspot.onlinePeople.AppController;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,18 +12,21 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.example.gspot.R;
+import com.example.gspot.User;
+import com.example.gspot.Post.comment;
 
-public class postAdapter extends BaseAdapter {
+public class chatAdapter extends BaseAdapter {
 	private Activity activity;
     private LayoutInflater inflater;
 	private TextView message;
+	//private List<comment> messages = new ArrayList<comment>();
 	private List<comment> messages;
 	User user;
-	ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 	private LinearLayout wrapper;
 	
 
-	public postAdapter(Activity activity,List<comment> comentList) {
+	public chatAdapter(Activity activity,List<comment> comentList) {
 		this.activity = activity;
 		this.messages = comentList;
 	}
@@ -58,18 +48,14 @@ public class postAdapter extends BaseAdapter {
             inflater = (LayoutInflater) activity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null)
-            convertView = inflater.inflate(R.layout.listitem_discuss, null);
+            convertView = inflater.inflate(R.layout.list_chat_message, null);
         
-		 if (imageLoader == null)
-	            imageLoader = AppController.getInstance().getImageLoader();
-		 NetworkImageView thumbNail = (NetworkImageView) convertView
-	                .findViewById(R.id.list_image2);
+		wrapper = (LinearLayout) convertView.findViewById(R.id.wrapperchat);
+		message = (TextView) convertView.findViewById(R.id.commentchat);
+    
 		
-		wrapper = (LinearLayout) convertView.findViewById(R.id.wrapper);
-		message = (TextView) convertView.findViewById(R.id.comment);
-		message.setText(Html.fromHtml("<i><b>"+coment.name+"</b></i><br>"+coment.comment+"<br><small><font color='gray'>"+coment.date+"</font></small>"));
-		
-		thumbNail.setImageUrl(coment.ImageUrl, imageLoader);
+       
+		message.setText(Html.fromHtml(coment.comment+"<br><small><font color='gray'>"+coment.date+"</font></small>"));
 		 
 		message.setBackgroundResource(coment.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
 		wrapper.setGravity(coment.left ? Gravity.LEFT : Gravity.RIGHT);
@@ -77,10 +63,7 @@ public class postAdapter extends BaseAdapter {
 		return convertView;
 	}
 	
-	public Bitmap decodeToBitmap(byte[] decodedByte) {
-		return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
-	}
-
+	
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub

@@ -17,6 +17,13 @@ public class comment {
 		this.name=name;	
 		this.ImageUrl=ImageUrl;
 	}
+	public comment(boolean left, String message,String date,int userID) {
+		super();
+		this.left = left;
+		this.comment=message;
+		this.date=date;
+		this.userID=userID;
+	}
 	public String getDate() {
 		return date;
 	}

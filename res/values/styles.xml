@@ -16,7 +16,7 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="android:actionBarStyle">@style/myactionbar</item>
-        
+       
     </style>
     <style name="myactionbar" parent="@android:style/Widget.Holo.Light.ActionBar">   
         <item name="android:background">@color/orange</item>

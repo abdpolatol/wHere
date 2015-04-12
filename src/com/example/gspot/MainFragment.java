@@ -73,7 +73,11 @@ public class MainFragment extends Fragment{
 	        ViewGroup container, 
 	        Bundle savedInstanceState) {
 	    View view = inflater.inflate(R.layout.activity_main, container, false);
-	    
+	    // async task yapýlcak
+	    StrictMode.ThreadPolicy policy = new
+	    		StrictMode.ThreadPolicy.Builder()
+	    		.permitAll().build();
+	    		StrictMode.setThreadPolicy(policy);
 	    LoginButton authButton = (LoginButton) view.findViewById(R.id.authButton);
 	    authButton.setFragment(this);
 	    b= (Button) view.findViewById(R.id.loginbutton);
@@ -235,7 +239,7 @@ public class MainFragment extends Fragment{
             
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             String response = httpclient.execute(httppost, responseHandler);
-            System.out.println(response);
+           
              
             if(response.equalsIgnoreCase("User Found")){
             	registerInBackground(uname.trim());            	

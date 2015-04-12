@@ -32,6 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.example.gspot.chat.newChatScreen;
 import com.example.gspot.friends.FriendsAdapter;
 import com.example.gspot.friends.FriendsFragment;
 import com.example.gspot.onlinePeople.AppController;
@@ -202,6 +203,7 @@ public class newUserPage extends Activity{
     	   		displayView(0);
         }
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
+        mDrawerListfriend.setOnItemClickListener(new SlideMenuClickListener2());
 
     }
    
@@ -233,15 +235,19 @@ public class newUserPage extends Activity{
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        boolean drawerOpen = (mDrawerLayout.isDrawerOpen(mDrawerList) || mDrawerLayout.isDrawerOpen(mDrawerListfriend));
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        if( mDrawerLayout.isDrawerOpen(mDrawerListfriend)){
+        	getActionBar().setDisplayHomeAsUpEnabled(false);
+            getActionBar().setHomeButtonEnabled(false);
+        }
+        if(!mDrawerLayout.isDrawerOpen(mDrawerListfriend)){
+        	getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
+        }
+        	
         return super.onPrepareOptionsMenu(menu);
     }
-    
- 
-    /**
-     * Swaps fragments in the main content view
-     */
     
 
     /**
@@ -309,6 +315,35 @@ public class newUserPage extends Activity{
             
         }
     }
+    private class SlideMenuClickListener2 implements
+	    ListView.OnItemClickListener {
+			final AlertDialog.Builder adb = new AlertDialog.Builder(newUserPage.this);
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+			        long id) {
+			    // display view for selected nav drawer item
+				Fragment fragment = null;
+				userList.get(position);
+				Bundle bundle= new Bundle();
+				bundle.putString("name", userList.get(position).getName());
+				bundle.putString("surname", userList.get(position).getSurname());
+				bundle.putInt("id", userList.get(position).getUserID());
+				bundle.putString("picture", userList.get(position).getImageUrl());
+				fragment = new newChatScreen();
+			    fragment.setArguments(bundle);
+			    mTitle=userList.get(position).getName()+" "+userList.get(position).getSurname();
+			    //getActionBar().setTitle(userList.get(position).getName()+" "+userList.get(position).getSurname());
+			    android.app.FragmentManager fragmentManager = getFragmentManager();
+	            fragmentManager.beginTransaction()
+	                    .replace(R.id.frame_container, fragment).commit();
+	            
+	         // update selected item and title, then close the drawer
+	            mDrawerListfriend.setItemChecked(position, true);
+	            mDrawerListfriend.setSelection(position);
+	            mDrawerLayout.closeDrawer(mDrawerListfriend); 
+		    
+			}
+	    }
     /**
      * Diplaying fragment view for selected nav drawer list item
      * */

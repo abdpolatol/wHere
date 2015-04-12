@@ -1,4 +1,4 @@
-package com.example.gspot.Post;
+package com.example.gspot.chat;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -28,8 +30,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -42,36 +44,48 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.gspot.PlaceClass;
 import com.example.gspot.R;
 import com.example.gspot.User;
+import com.example.gspot.Post.PostFragment;
+import com.example.gspot.Post.comment;
+import com.example.gspot.Post.postAdapter;
 import com.example.gspot.onlinePeople.AppController;
 
-public class PostFragment extends Fragment {
-	private com.example.gspot.Post.postAdapter adapter;
-	private static final String TAG = PostFragment.class.getSimpleName();
+public class newChatScreen extends Fragment {
+	private chatAdapter adapter;
+	private static final String TAG = newChatScreen.class.getSimpleName();
 	private List<comment> commentList = new ArrayList<comment>();
 	private ListView lv;
 	private EditText editText1;
-	User user;
-	PlaceClass place;
+	User user,friend;
+	String name,surname,picture;
+    int useridBundle;
 	private ImageView profileImage;
 	Bitmap bitmap;
 	private ProgressDialog pDialog;
 	ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 	 public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	            Bundle savedInstanceState) {  
-	        View rootView = inflater.inflate(R.layout.activity_discuss, container, false);
+	        View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
 	        return rootView;
 	    }
 	 public void onStart() {
 	        super.onStart();
-
+	        
 			Intent i = getActivity().getIntent();
 	        user = (User) i.getParcelableExtra("user");
-	        place = (PlaceClass) i.getParcelableExtra("place");
-	      
-			lv = (ListView) getView().findViewById(R.id.listView1);
-			editText1 = (EditText) getView().findViewById(R.id.editText1);
+	       // place = (PlaceClass) i.getParcelableExtra("place");
+	        Bundle bundle= this.getArguments();
+	       
+	        name=bundle.getString("name");
+	        surname=bundle.getString("surname");
+	        useridBundle=bundle.getInt("id");
+	        picture=bundle.getString("picture");
+	        System.out.println(useridBundle);
+	        System.out.println(user.getUserID());
+	        
+			lv = (ListView) getView().findViewById(R.id.listViewchat);
+			editText1 = (EditText) getView().findViewById(R.id.editTextchat);
 			
-			adapter = new postAdapter(getActivity(), commentList);
+			adapter = new chatAdapter(getActivity(), commentList);
 			lv.setAdapter(adapter);
 			commentList.clear();
 			
@@ -85,21 +99,13 @@ public class PostFragment extends Fragment {
 						
 						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 				        Calendar cal = Calendar.getInstance();
-						
+				       
 						HttpClient httpclient=new DefaultHttpClient();
-				        HttpPost httppost= new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/sendPost.php");
-				        
-				        List<NameValuePair> nameValuePairs;					        
-				        nameValuePairs = new ArrayList<NameValuePair>(4);				        
-				        nameValuePairs.add(new BasicNameValuePair("userID",Integer.toString(user.getUserID())));
-				        nameValuePairs.add(new BasicNameValuePair("placeID",place.getId().trim()));
-				        nameValuePairs.add(new BasicNameValuePair("post_date",dateFormat.format(cal.getTime()).trim()));
-				        nameValuePairs.add(new BasicNameValuePair("post",editText1.getText().toString().trim())); 
-				               
-				        ResponseHandler<String> responseHandler = new BasicResponseHandler();
+				        HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/sendMessage.php?id="+user.getUserID()+"&id2="+useridBundle+"&msg="+editText1.getText().toString());
+				        HttpPost httppost2 = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/processmessage.php?mode=3&name="+user.getName()+"&surname="+user.getSurname()+"&id2="+useridBundle); 
 				        try {
-				        	httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-							final String response = httpclient.execute(httppost, responseHandler);
+							httpclient.execute(httppost);
+							httpclient.execute(httppost2);
 						} catch (ClientProtocolException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -107,6 +113,8 @@ public class PostFragment extends Fragment {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+				       
+				        
 				        commentList.add(new comment(false, editText1.getText().toString(),dateFormat.format(cal.getTime()).trim(),user.getName(),user.getImageUrl(),user.getUserID()));
 						editText1.setText("");
 						return true;
@@ -115,14 +123,61 @@ public class PostFragment extends Fragment {
 				}
 			});
 			
-			String url = "http://www.ceng.metu.edu.tr/~e1818871/wall.php?placeID="+place.getId();
+			String url = "http://www.ceng.metu.edu.tr/~e1818871/getMessage.php?id="+user.getUserID()+"&id2="+useridBundle;
 	        // Creating volley request obj
-	        JsonArrayRequest PostReq = new JsonArrayRequest(url,
-	                new Response.Listener<JSONArray>() {
+			String response="";
+			 ResponseHandler<String> responsehandler = new BasicResponseHandler();
+			HttpClient httpclient=new DefaultHttpClient();
+	        HttpPost httppost= new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/getMessage.php?id="+user.getUserID()+"&id2="+useridBundle);
+	        
+	        try {
+	        	 response=httpclient.execute(httppost,responsehandler);
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
+	        String[] response2 = response.split(">");
+	        JSONArray jarray = null;
+			try {
+				jarray = new JSONArray(response2[1]);
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	        System.out.println("asd    ----   "+response2[1]);
+	        for (int j = 0; j <jarray.length(); j++) {
+                try {
+
+                    JSONObject obj =jarray.getJSONObject(j);
+                    
+                    String message=obj.getString("message");
+                    String date=obj.getString("time");
+                    int userid=Integer.parseInt(obj.getString("id"));
+                    	System.out.println("ali");
+                        System.out.println(obj);
+                    	System.out.println(userid);
+               		if(userid==user.getUserID())
+               			commentList.add(new comment(false,message,date,userid));
+               		else
+               			commentList.add(new comment(true,message,date,userid));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+	        
+	        /*
+	        JsonArrayRequest ChatReq = new JsonArrayRequest(url,
+	                new Response.Listener<JSONArray>() {	        		
 	                    @Override
-	                    public void onResponse(JSONArray response) {
+	                    public void onResponse(JSONArray response) {	                    	
 	                        Log.d(TAG, response.toString());
-	                        hidePDialog();
+	                        
 	                       
 	 
 	                        // Parsing json
@@ -130,16 +185,17 @@ public class PostFragment extends Fragment {
 	                            try {
 	 
 	                                JSONObject obj = response.getJSONObject(i);
-	                                String name=obj.getString("name");
-	        	                    String imageUrl=obj.getString("profile_pic");
-	        	                    String post=obj.getString("post");
-	        	                    String date=obj.getString("post_date");
-	        	                    int userid=Integer.parseInt(obj.getString("userID"));
-
+	                            
+	        	                    String message=obj.getString("message");
+	        	                    String date=obj.getString("time");
+	        	                    int userid=Integer.parseInt(obj.getString("id"));
+	        	                    	System.out.println("ali");
+	        	                        System.out.println(obj);
+	        	                    	System.out.println(userid);
 	        	               		if(userid==user.getUserID())
-	        	               			commentList.add(new comment(false,post,date,name,imageUrl,userid));
+	        	               			commentList.add(new comment(false,message,date,userid));
 	        	               		else
-	        	               			commentList.add(new comment(true,post,date,name,imageUrl,userid));
+	        	               			commentList.add(new comment(true,message,date,userid));
 	 
 	                            } catch (JSONException e) {
 	                                e.printStackTrace();
@@ -160,11 +216,11 @@ public class PostFragment extends Fragment {
 	 
 	                    }
 	                });
-	 
+	 		
 	        // Adding request to request queue
-	        AppController.getInstance().addToRequestQueue(PostReq);
+	        AppController.getInstance().addToRequestQueue(ChatReq);
 			//addItems();
-			//adapter.notifyDataSetChanged();
+			//adapter.notifyDataSetChanged();*/
 			
 	 }/*
 	 private void addItems() {
