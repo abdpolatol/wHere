@@ -1,5 +1,9 @@
 package com.example.gspot;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -17,15 +22,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.android.volley.Response;
@@ -48,7 +58,7 @@ public class newUserPage extends Activity{
 	// slide menu items
     private String[] navMenuTitles;
     private TypedArray navMenuIcons;
-    
+    private ImageView imageView;
     private ArrayList<NavDrawerItem> navDrawerItems,navDrawerItemsfriend;
     private NavDrawerListAdapter adapter;
     private friendDrawerAdapter adpt;
@@ -151,13 +161,6 @@ public class newUserPage extends Activity{
         
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(4, -1)));
         
-        //Logout
-        
-        // Pages
-       // navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
-        // What's hot, We  will add a counter here
-       // navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
-         
  
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -170,9 +173,10 @@ public class newUserPage extends Activity{
         // enabling action bar app icon and behaving it as toggle button
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
- 
+        getActionBar().setDisplayShowHomeEnabled(false);
+        
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, //nav menu toggle icon
+                R.drawable.logo, //nav menu toggle icon
                 R.string.app_name, // nav drawer open - description for accessibility
                 R.string.app_name // nav drawer close - description for accessibility
         ){
@@ -238,7 +242,7 @@ public class newUserPage extends Activity{
         boolean drawerOpen = (mDrawerLayout.isDrawerOpen(mDrawerList) || mDrawerLayout.isDrawerOpen(mDrawerListfriend));
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         if( mDrawerLayout.isDrawerOpen(mDrawerListfriend)){
-        	getActionBar().setDisplayHomeAsUpEnabled(false);
+        	getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setHomeButtonEnabled(false);
         }
         if(!mDrawerLayout.isDrawerOpen(mDrawerListfriend)){
@@ -261,6 +265,8 @@ public class newUserPage extends Activity{
                 long id) {
             // display view for selected nav drawer item
         	if(position==4 && user.getCheckInFlag()==1){
+        		if(imageView!=null)
+        		imageView.setImageBitmap(null);
         		Intent i= new Intent(newUserPage.this, newPostScreen.class);    	               
                 i.putExtra("user",user);
                 i.putExtra("place", place);
@@ -268,7 +274,8 @@ public class newUserPage extends Activity{
                 finish();
         	}
         	else if(position==4 && user.getCheckInFlag()==0)
-        	{	
+        	{	if(imageView!=null)
+        		imageView.setImageBitmap(null);
         		adb.setTitle("Confirm Logout");
     			adb.setMessage("Do you want to logout ?");
     			adb.setIcon(R.drawable.ic_logout);			
@@ -289,7 +296,8 @@ public class newUserPage extends Activity{
         		
         	}
         	else if(position==5 && user.getCheckInFlag()==1)
-        	{	
+        	{	if(imageView!=null)
+        		imageView.setImageBitmap(null);
         		adb.setTitle("Confirm Logout");
     			adb.setMessage("Do you want to logout ?");
     			adb.setIcon(R.drawable.ic_logout);			
@@ -332,6 +340,26 @@ public class newUserPage extends Activity{
 				fragment = new newChatScreen();
 			    fragment.setArguments(bundle);
 			    mTitle=userList.get(position).getName()+" "+userList.get(position).getSurname();
+			    
+			    ActionBar actionBar = getActionBar();
+			    actionBar.setDisplayOptions(actionBar.getDisplayOptions()
+			            | ActionBar.DISPLAY_SHOW_CUSTOM);
+			    imageView = new ImageView(actionBar.getThemedContext());
+			    Bitmap actionbar = getBitmapFromURL(userList.get(position).getImageUrl());
+			    imageView.setScaleType(ImageView.ScaleType.CENTER);
+			    imageView.setImageBitmap(Bitmap.createScaledBitmap(actionbar, 100, 100, false));
+			    ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
+			            ActionBar.LayoutParams.WRAP_CONTENT,
+			            ActionBar.LayoutParams.WRAP_CONTENT, Gravity.RIGHT
+			                    | Gravity.CENTER_VERTICAL);
+			    //layoutParams.rightMargin = 40;
+			    imageView.setLayoutParams(layoutParams);
+			    actionBar.setCustomView(imageView);
+			    
+			    
+			    
+			    
+			    
 			    //getActionBar().setTitle(userList.get(position).getName()+" "+userList.get(position).getSurname());
 			    android.app.FragmentManager fragmentManager = getFragmentManager();
 	            fragmentManager.beginTransaction()
@@ -352,19 +380,26 @@ public class newUserPage extends Activity{
         Fragment fragment = null;
         switch (position) {
         case 0:
+        	if(imageView!=null)
+        	imageView.setImageBitmap(null);
             fragment = new PhotosFragment();
             break;
         case 1:
+        	if(imageView!=null)
+        	imageView.setImageBitmap(null);
         	Bundle bundle= new Bundle();
         	bundle.putInt("flag", 0);
             fragment = new MyProfileFragment();
             fragment.setArguments(bundle);
             break;
         case 2:
-        	
+        	if(imageView!=null)
+        	imageView.setImageBitmap(null);
             fragment = new MyLocationFragment();
             break;
         case 3:
+        	if(imageView!=null)
+        	imageView.setImageBitmap(null);
         	fragment = new FriendsFragment();
             break;
         case 4:
@@ -423,8 +458,21 @@ public class newUserPage extends Activity{
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-  
 
-	
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            // Log exception
+            return null;
+        }
+    }
 
 }
+
