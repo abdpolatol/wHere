@@ -35,7 +35,6 @@ public class DownloadImage extends Activity {
     load_img.setOnClickListener(new View.OnClickListener(){
       @Override
       public void onClick(View arg0) {
-    	  System.out.println(user.getImageUrl());
          new LoadImage().execute(user.getImageUrl());
       }
     });

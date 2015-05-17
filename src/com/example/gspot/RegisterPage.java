@@ -104,8 +104,7 @@ public class RegisterPage extends Activity {
             
     public void register(){
 		try{            
-            System.out.println("saddasdadsadasdadadasdasd");
-			System.out.println(birthday.getText().toString().trim());
+           
 			
             httpclient=new DefaultHttpClient();
             httppost= new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/register.php");

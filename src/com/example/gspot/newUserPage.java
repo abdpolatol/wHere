@@ -46,6 +46,7 @@ import com.example.gspot.chat.newChatScreen;
 import com.example.gspot.friends.FriendsAdapter;
 import com.example.gspot.friends.FriendsFragment;
 import com.example.gspot.onlinePeople.AppController;
+import com.example.gspot.settings.SettingsFragment;
 import com.example.gspot.slidingmenu.MyLocationFragment;
 import com.example.gspot.slidingmenu.MyProfileFragment;
 import com.example.gspot.slidingmenu.NavDrawerItem;
@@ -82,6 +83,8 @@ public class newUserPage extends Activity{
          i= getIntent();
          final Activity activity=this;
         user = (User) i.getParcelableExtra("user");
+        System.out.println("haldun");
+        System.out.println(user.getRange());
         
         if(user.getCheckInFlag()==1)
         	place=(PlaceClass) i.getParcelableExtra("place");
@@ -472,6 +475,21 @@ public class newUserPage extends Activity{
             // Log exception
             return null;
         }
+    }
+    @Override
+    public void onBackPressed() {
+    	final AlertDialog.Builder adb = new AlertDialog.Builder(this);
+    	adb.setTitle("Confirm Exit");
+		adb.setMessage("Do you want to exit ?");
+		//adb.setIcon(R.drawable.checkinicon);			
+		adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {				
+				finish();				
+			}				
+		});
+		adb.setNegativeButton("No", null);
+		adb.show();
+    	
     }
 
 }

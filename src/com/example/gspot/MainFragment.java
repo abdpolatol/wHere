@@ -266,6 +266,7 @@ public class MainFragment extends Fragment{
                 String bdate="";
                 String city="";
                 String imageUrl="";
+                int range=100;
                 int age=0;
                 int userID;
                 String result = null; 
@@ -293,6 +294,7 @@ public class MainFragment extends Fragment{
                 city = json_data.getString("city");
                 String[] dateinfo = bdate.split("-");
                 imageUrl = json_data.getString("profile_pic");
+                range = json_data.getInt("range_attr");
                 age = getAge( Integer.parseInt(dateinfo[0]), Integer.parseInt(dateinfo[1]), Integer.parseInt(dateinfo[2]));
                 User user = new User();
                 user.setName(name);
@@ -303,6 +305,7 @@ public class MainFragment extends Fragment{
                 user.setCity(city);
                 user.setImageUrl(imageUrl);
                 user.setCheckInFlag(0);
+                user.setRange(range);
               
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -322,7 +325,8 @@ public class MainFragment extends Fragment{
                 //***************
                
                 Intent i= new Intent(getActivity(), newUserPage.class);
-                
+                System.out.println("denizzz");
+                System.out.println(user.getRange());
                 i.putExtra("user", user);
                 startActivity(i);
                 getActivity().finish();

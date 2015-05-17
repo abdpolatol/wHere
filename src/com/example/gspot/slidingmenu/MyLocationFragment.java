@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +43,6 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -106,6 +108,8 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         Intent i = getActivity().getIntent();
         user = (User) i.getParcelableExtra("user");
         list=(ListView)getView().findViewById(R.id.list);
+        System.out.println("deniz");
+        System.out.println(user.getRange());
         final AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         //setUpMapIfNeeded();    
         mLocationClient = new LocationClient(getActivity(), this, this);
@@ -244,20 +248,24 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                     		if(nearbyplaces.size()!=0){
                     			nearbyplaces.clear();
                     		}// onur's api AIzaSyBg0q_Qi-IbgaVVBCX3MadAt2rFMkwvZWU
-                    		 
+                    		
+                    		mCurrentLocation = mLocationClient.getLastLocation();
+                    		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 15);
+                    		map.animateCamera(cameraUpdate);
+                    		System.out.println(mCurrentLocation.getLatitude());
+                    		System.out.println(mCurrentLocation.getLongitude());
+                            String query = "https://maps.googleapis.com/maps/api/place/search/json?radius="+user.getRange()+"&key=AIzaSyBN87s3ZpQkKdw1aVjWWj0qvBEIZgiyzyg&location=";
+                    		query=query.concat(String.valueOf(mCurrentLocation.getLatitude())+","+String.valueOf(mCurrentLocation.getLongitude()));                    		
+                    		
+                    		new HttpTask().execute(query);
                     	}
                     	
                     }
                 });
         
-        mCurrentLocation = mLocationClient.getLastLocation();
-        String query = "https://maps.googleapis.com/maps/api/place/search/json?radius=100&key=AIzaSyBN87s3ZpQkKdw1aVjWWj0qvBEIZgiyzyg&location=";
-		query=query.concat(String.valueOf(mCurrentLocation.getLatitude())+","+String.valueOf(mCurrentLocation.getLongitude()));                    		
-		
-		new HttpTask().execute(query);
         
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 15);
-		map.animateCamera(cameraUpdate);
+        
+        
         
     }
     
@@ -362,10 +370,14 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 			if(lines[i].toLowerCase().contains("\"place_id\"")){
 				placeIDs.add(lines[i].substring(lines[i].indexOf(": \"")+3,lines[i].indexOf("\",")));
 				nearbyplaces.get(counter).setId(lines[i].substring(lines[i].indexOf(": \"")+3,lines[i].indexOf("\",")));
+				double distanceLat = Math.abs(Double.parseDouble(nearbyplaces.get(counter).getLat())-mCurrentLocation.getLatitude());
+				double distanceLon= Math.abs(Double.parseDouble(nearbyplaces.get(counter).getLon())- mCurrentLocation.getLongitude());
+				double shortest = Math.sqrt(Math.pow(distanceLat,2)+Math.pow(distanceLon,2));
+				
 				
 				LatLng ltlng = new LatLng(Double.parseDouble(nearbyplaces.get(counter).getLat()), Double.parseDouble(nearbyplaces.get(counter).getLon()));
-				MarkerOptions marker = new MarkerOptions().position(ltlng).title(nearbyplaces.get(counter).getName());
-				marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.orange));		
+				MarkerOptions marker = new MarkerOptions().position(ltlng).title(nearbyplaces.get(counter).getName()+"   \n" + String.format("%.2f", shortest)+"m");
+				marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.orange));		 
 				map.addMarker(marker);
 				
 				counter++;
@@ -377,9 +389,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		 String onlineUsers = userCountFunction(placeIDs,placeIDs.size());
 		 String subString =onlineUsers.substring(1, onlineUsers.length()-2);
 		 
-		 System.out.println("sizeee");
-		 System.out.println(nearbyplaces.size());
-		 System.out.println(placeIDs.size());
+		 
 		  userCount= Arrays.asList(subString.split(","));
 		
 		 

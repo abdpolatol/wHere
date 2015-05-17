@@ -17,6 +17,7 @@ public class User implements Parcelable{
 	private int age;
 	private int flag;
 	private int checkInFlag;
+	private int range;
 	
 	
 	public int getAge(){
@@ -85,6 +86,12 @@ public class User implements Parcelable{
 	public void setCheckInFlag(int checkInFlag) {
 		this.checkInFlag = checkInFlag;
 	}
+	public int getRange() {
+		return range;
+	}
+	public void setRange(int range) {
+		this.range = range;
+	}
 	
 	@Override
 	public int describeContents() {
@@ -102,6 +109,7 @@ public class User implements Parcelable{
 		dest.writeString(imageUrl);
 		dest.writeInt(flag);
 		dest.writeInt(checkInFlag);
+		dest.writeInt(range);
 		
 	}
 	public void readFromParcel(Parcel in)
@@ -115,6 +123,7 @@ public class User implements Parcelable{
         this.imageUrl = in.readString();
         this.flag = in.readInt();
         this.checkInFlag = in.readInt();
+        this.range = in.readInt();
     }
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         public User createFromParcel(Parcel in) {

@@ -403,9 +403,7 @@ public class MyProfileFragment extends Fragment implements PullScrollView.OnTurn
 		
         try{
             JSONArray jArray = new JSONArray(result);
-            int textViewCount = jArray.length();
-            
-            System.out.println(textViewCount);
+      
             for(int i=0;i<jArray.length();i++){
             	
 

@@ -166,68 +166,7 @@ public class PostFragment extends Fragment {
 			//addItems();
 			//adapter.notifyDataSetChanged();
 			
-	 }/*
-	 private void addItems() {
-		 	String result = "";
-	    	ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-	    	nameValuePairs.add(new BasicNameValuePair("placeID",place.getId()));
-	        
-	    	InputStream is = null;
-	    	
-	    	try{
-	            HttpClient httpclient = new DefaultHttpClient();
-	            HttpPost httppost = new HttpPost("http://www.ceng.metu.edu.tr/~e1818871/wall.php");
-	            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-	            HttpResponse response = httpclient.execute(httppost);
-	            HttpEntity entity = response.getEntity();
-	            is = entity.getContent();
-	    	}catch(Exception e){
-	            Log.e("log_tag", "Error in http connection "+e.toString());
-	    	}
-	    //convert response to string
-	    	try{
-	            BufferedReader reader = new BufferedReader(new InputStreamReader(is,"iso-8859-9"),8);
-	            StringBuilder sb = new StringBuilder();
-	            String line = null;
-	            while ((line = reader.readLine()) != null) {
-	                    sb.append(line + "\n");
-	            }
-	            is.close();
-	     
-	            result=sb.toString();
-	    	}catch(Exception e){
-	            Log.e("log_tag", "Error converting result "+e.toString());
-	    	}
-	    	try{
-	            JSONArray jArray = new JSONArray(result);
-	            
-	            int textViewCount = jArray.length();
-	            
-	            
-	            for(int i=0;i<jArray.length();i++){
-	            	
-
-	        			
-	                    JSONObject json_data = jArray.getJSONObject(i);
-	                    String name=json_data.getString("name");
-	                    String imageUrl=json_data.getString("profile_pic");
-	                    String post=json_data.getString("post");
-	                    String date=json_data.getString("post_date");
-	                    int userid=Integer.parseInt(json_data.getString("userID"));
-	                   
-	                    
-	                   
-	               		if(userid==user.getUserID())
-	               			commentList.add(new comment(false,post,date,name,imageUrl));
-	               		else
-	               			commentList.add(new comment(true,post,date,name,imageUrl));
-	            }
-	    	}
-	    	catch(JSONException e){
-	            Log.e("log_tag", "Error parsing data "+e.toString());
-	    	}
-			
-		}*/
+	 }
 	 private void hidePDialog() {
 	        if (pDialog != null) {
 	            pDialog.dismiss();
